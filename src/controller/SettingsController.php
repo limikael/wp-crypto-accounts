@@ -1,0 +1,63 @@
+<?php
+
+	require_once __DIR__."/../utils/Template.php";
+	require_once __DIR__."/../plugin/BlockChainAccountsPlugin.php";
+	require_once __DIR__."/../utils/Singleton.php";
+
+	/**
+	 * Manage the settings page.
+	 */
+	class SettingsController extends Singleton {
+
+		/**
+		 * Construct.
+		 */
+		public function __construct() {
+			$this->settings=array(array(
+				"setting"=>"blockchainaccounts_wallet_id",
+				"title"=>"Wallet id",
+			), array(
+				"setting"=>"blockchainaccounts_wallet_password",
+				"title"=>"Wallet password",
+			), array(
+				"setting"=>"blockchainaccounts_notification_key",
+				"title"=>"Notifications key",
+			));
+
+			add_action('admin_menu',array($this,'admin_menu'));
+		}
+
+		/**
+		 * Add options page
+		 */
+		public function admin_menu() {
+			// This page will be under "Settings"
+			add_options_page(
+				'Blockchain Accounts',
+				'Blockchain Accounts',
+				'manage_options', 
+				'blockchainaccounts_settings',
+				array($this,'create_settings_page')
+			);
+
+			add_action('admin_init',array($this,'admin_init'));			
+		}		
+
+		/**
+		 * Admin init.
+		 */
+		public function admin_init() {
+			foreach ($this->settings as $setting) {
+				register_setting("blockchainaccounts",$setting["setting"]);
+			}
+		}
+
+		/**
+		 * Create the settings page.
+		 */
+		public function create_settings_page() {
+			$template=new Template(__DIR__."/../template/settings.tpl.php");
+			$template->set("settings",$this->settings);
+			$template->show();
+		}
+	}
