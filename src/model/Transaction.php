@@ -1,6 +1,7 @@
 <?php
 
 	require_once __DIR__."/../utils/ActiveRecord.php";
+	require_once __DIR__."/../utils/BitcoinUtil.php";
 	require_once __DIR__."/../plugin/BlockChainAccountsPlugin.php";
 
 	/**
@@ -23,12 +24,12 @@
 		/**
 		 * Get balance for affected account.
 		 */
-		public function getBalanceForAccount($account) {
+		public function getBalanceForAccount($denomination, $account) {
 			if ($account->id==$this->toAccountId)
-				return $this->toAccountBalance;
+				return BitcoinUtil::fromSatoshi($denomination, $this->toAccountBalance);
 
 			if ($account->id==$this->fromAccountId)
-				return $this->fromAccountBalance;
+				return ButcoinUtil::fromSatoshi($denomination, $this->fromAccountBalance);
 
 			return NULL;
 		}
@@ -36,12 +37,12 @@
 		/**
 		 * Get amount for affected account.
 		 */
-		public function getAmountForAccount($account) {
+		public function getAmountForAccount($denomination, $account) {
 			if ($account->id==$this->toAccountId)
-				return $this->amount;
+				return BitcoinUtil::fromSatoshi($denomination, $this->amount);
 
 			if ($account->id==$this->fromAccountId)
-				return -$this->amount;
+				return -BitcoinUtil::fromSatoshi($denomination, $this->amount);
 
 			return NULL;
 		}

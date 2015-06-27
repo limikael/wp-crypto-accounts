@@ -1,6 +1,7 @@
 <?php
 
 	require_once __DIR__."/../utils/ActiveRecord.php";
+	require_once __DIR__."/../utils/BitcoinUtil.php";
 	require_once __DIR__."/../plugin/BlockChainAccountsPlugin.php";
 	require_once __DIR__."/Transaction.php";
 
@@ -21,8 +22,8 @@
 		/**
 		 * Get balance.
 		 */
-		public function getBalance() {
-			return $this->balance;
+		public function getBalance($denomination) {
+			return BitcoinUtil::fromSatoshi($denomination,$this->balance);
 		}
 
 		/**

@@ -18,3 +18,39 @@
 	padding: 5px;
 	border: 0;
 }
+
+.blockchainaccounts-withdraw {
+	border: 0;
+}
+
+.blockchainaccounts-withdraw th {
+	width: 40%;
+	border: 0;
+}
+
+.blockchainaccounts-withdraw td {
+	width: 60%;
+	border: 0;
+}
+
+.blockchainaccounts-withdraw .description {
+	font-style: italic;
+}
+
+.blockchainaccounts-message-success {
+	background: #c0ffc0;
+	border: 1px solid #00ff00;
+	margin: 6px;
+	padding: 10px;
+	margin-bottom: 20px;
+	border-radius: 10px;
+}
+
+.blockchainaccounts-message-error {
+	background: #ffc0c0;
+	border: 1px solid #ff0000;
+	margin: 6px;
+	padding: 10px;
+	margin-bottom: 20px;
+	border-radius: 10px;
+}

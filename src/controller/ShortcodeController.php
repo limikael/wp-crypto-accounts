@@ -17,6 +17,7 @@
 			add_shortcode("bca_balance", array($this, "bca_balance"));
 			add_shortcode("bca_deposit", array($this, "bca_deposit"));
 			add_shortcode("bca_history", array($this, "bca_history"));
+			add_shortcode("bca_withdraw", array($this, "bca_withdraw"));
 
 			wp_register_script("blockchainaccounts-jquery-qrcode",
 				plugins_url()."/wpblockchainaccounts/res/jquery.qrcode-0.12.0.min.js");
@@ -28,13 +29,16 @@
 		/**
 		 * Show user balance.
 		 */
-		public function bca_balance() {
+		public function bca_balance($p) {
+			if (!isset($p["denomination"]))
+				$p["denomination"]="bits";
+
 			$account=Account::getCurrentUserAccount();
 
 			if (!$account)
 				return "<i>not logged in</i>";
 
-			return $account->getBalance();
+			return $account->getBalance($p["denomination"])." ".$p["denomination"];
 		}
 
 		/**
@@ -60,9 +64,13 @@
 		/**
 		 * History.
 		 */
-		public function bca_history() {
+		public function bca_history($p) {
 			wp_enqueue_style("wpblockchainaccounts");
 
+			if (!isset($p["denomination"]))
+				$p["denomination"]="bits";
+
+			$denom=$p["denomination"];
 			$account=Account::getCurrentUserAccount();
 
 			if (!$account)
@@ -73,8 +81,8 @@
 			foreach ($account->getTransactions() as $item) {
 				$transaction=array(
 					"item"=>$item,
-					"amount"=>$item->getAmountForAccount($account),
-					"balance"=>$item->getBalanceForAccount($account)
+					"amount"=>$item->getAmountForAccount($denom,$account)." $denom",
+					"balance"=>$item->getBalanceForAccount($denom,$account)." $denom"
 				);
 
 				$transaction["time"]=date("Y-m-d",$item->timestamp);
@@ -87,6 +95,32 @@
 			$template=new Template(__DIR__."/../template/history.tpl.php");
 			$template->set("transactions",$transactions);
 
+			return $template->render();
+		}
+
+		/**
+		 * Withdraw.
+		 */
+		public function bca_withdraw($p) {
+			if (!isset($p["denomination"]))
+				$p["denomination"]="bits";
+
+			wp_enqueue_style("wpblockchainaccounts");
+
+			$denom=$p["denomination"];
+			$account=Account::getCurrentUserAccount();
+
+			if (!$account)
+				return "<i>not logged in</i>";
+
+			$action=$_SERVER["PHP_SELF"];
+
+			if ($p["submit_attributes"])
+				$action.="?".$p["submit_attributes"];
+
+			$template=new Template(__DIR__."/../template/withdraw.tpl.php");
+			$template->set("denomination",$denom);
+			$template->set("action",$action);
 			return $template->render();
 		}
 	}
