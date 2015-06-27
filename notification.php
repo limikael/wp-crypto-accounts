@@ -22,6 +22,7 @@
 			exit("no associated account or transaction");
 
 		$transaction=new Transaction();
+		$transaction->notice="Deposit";
 		$transaction->transactionHash=$_REQUEST["transaction_hash"];
 		$transaction->toAccountId=$account->id;
 		$transaction->state=Transaction::CONFIRMING;
@@ -43,6 +44,7 @@
 		$account->balance+=$transaction->amount;
 		$account->save();
 
+		$transaction->toAccountBalance=$account->balance;
 		$transaction->timestamp=time();
 		$transaction->state=Transaction::COMPLETE;
 		$transaction->save();

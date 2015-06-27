@@ -1,0 +1,20 @@
+.blockchainaccounts-transaction-table {
+	border: 0;
+	width: 100%;
+	table-layout: fixed;
+}
+
+.blockchainaccounts-transaction-table th {
+	background: #404040;
+	color: #ffffff;
+	margin: 0;
+	padding: 5px;
+	border: 0;
+}
+
+.blockchainaccounts-transaction-table td {
+	background: #f0f0f0;
+	color: #000000;
+	padding: 5px;
+	border: 0;
+}

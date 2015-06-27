@@ -21,6 +21,32 @@
 		}
 
 		/**
+		 * Get balance for affected account.
+		 */
+		public function getBalanceForAccount($account) {
+			if ($account->id==$this->toAccountId)
+				return $this->toAccountBalance;
+
+			if ($account->id==$this->fromAccountId)
+				return $this->fromAccountBalance;
+
+			return NULL;
+		}
+
+		/**
+		 * Get amount for affected account.
+		 */
+		public function getAmountForAccount($account) {
+			if ($account->id==$this->toAccountId)
+				return $this->amount;
+
+			if ($account->id==$this->fromAccountId)
+				return -$this->amount;
+
+			return NULL;
+		}
+
+		/**
 		 * Set up fields.
 		 */
 		public static function initialize() {
@@ -33,5 +59,7 @@
 			self::addField("transactionHash","varchar(255)");
 			self::addField("state","varchar(32) not null");
 			self::addField("confirmations","integer");
+			self::addField("fromAccountBalance","integer");
+			self::addField("toAccountBalance","integer");
 		}
 	}

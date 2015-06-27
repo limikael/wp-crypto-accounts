@@ -2,6 +2,7 @@
 
 	require_once __DIR__."/../utils/ActiveRecord.php";
 	require_once __DIR__."/../plugin/BlockChainAccountsPlugin.php";
+	require_once __DIR__."/Transaction.php";
 
 	/**
 	 * Account abstraction.
@@ -95,5 +96,21 @@
 			self::addField("entity_type","varchar(255) not null");
 			self::addField("balance","integer not null");
 			self::addField("depositAddress","varchar(255)");
+		}
+
+		/**
+		 * Get transactions for this account.
+		 */
+		public function getTransactions() {
+			return Transaction::findAllByQuery(
+				"SELECT    * ".
+				"FROM      :table ".
+				"WHERE     toAccountId=:toId OR fromAccountId=:fromId ".
+				"ORDER BY  timestamp DESC",
+				array(
+					"toId"=>$this->id,
+					"fromId"=>$this->id
+				)
+			);
 		}
 	}
