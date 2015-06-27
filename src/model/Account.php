@@ -21,7 +21,7 @@
 		 * Get balance.
 		 */
 		public function getBalance() {
-			return 0;
+			return $this->balance;
 		}
 
 		/**

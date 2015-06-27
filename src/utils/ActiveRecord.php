@@ -9,14 +9,14 @@
 		/**
 		 * Set table to operate on.
 		 */
-		protected static function setTable($name) {
+		protected static final function setTable($name) {
 			self::$classes[get_called_class()]["table"]=self::$tablePrefix.$name;
 		}
 
 		/**
 		 * Get full table name.
 		 */
-		protected static function getFullTableName() {
+		protected static final function getFullTableName() {
 			self::init();
 
 			return self::$classes[get_called_class()]["table"];
@@ -25,7 +25,7 @@
 		/**
 		 * Add field.
 		 */
-		protected static function addField($name, $definition) {
+		protected static final function addField($name, $definition) {
 			if (!isset(self::$classes[get_called_class()]["primaryKey"]))
 				self::$classes[get_called_class()]["primaryKey"]=$name;
 
@@ -48,7 +48,7 @@
 
 			static::initialize();
 
-			if (!self::$classes[$class]["table"])
+			if (!isset(self::$classes[$class]["table"]))
 				self::$classes[$class]["table"]=self::$tablePrefix.strtolower(get_called_class());
 		}
 
@@ -69,7 +69,7 @@
 		/**
 		 * Create underlying table.
 		 */
-		public final static function createTable() {
+		public final static function install() {
 			self::init();
 
 			$table=self::$classes[get_called_class()]["table"];
@@ -134,7 +134,7 @@
 		/**
 		 * Drop table if it exists.
 		 */
-		public final static function dropTable() {
+		public final static function uninstall() {
 			self::init();
 
 			$table=self::$classes[get_called_class()]["table"];
@@ -150,15 +150,25 @@
 		private function getPrimaryKeyValue() {
 			$conf=self::$classes[get_called_class()];
 
+			if (!isset($this->$conf["primaryKey"]))
+				return NULL;
+
 			return $this->$conf["primaryKey"];
+		}
+
+		/**
+		 * Get conf.
+		 */
+		private static function getConf() {
+			self::init();
+			return self::$classes[get_called_class()];
 		}
 
 		/**
 		 * Save.
 		 */
 		public function save() {
-			self::init();
-			$conf=self::$classes[get_called_class()];
+			$conf=self::getConf();
 
 			$pk=$this->getPrimaryKeyValue();
 			$s="";
@@ -196,77 +206,14 @@
 			if (!$res)
 				throw new Exception("Unable to run query: ".join(",",$statement->errorInfo()));
 
-			if (!$this->$conf["primaryKey"])
+			if (!$this->getPrimaryKeyValue())
 				$this->$conf["primaryKey"]=self::$pdo->lastInsertId();
-		}
-
-		/**
-		 * Hydrate from statement.
-		 * TODO: handle default values better, let them be set in the constructor.
-		 */
-		public static function hydrateFromStatement($statement, $parameters=array()) {
-			self::init();
-			$conf=self::$classes[get_called_class()];
-
-			if (!$statement->execute($parameters))
-				throw new Exception("Unable to run query: ".join(",",$statement->errorInfo()));
-
-			$class=get_called_class();
-			$res=array();
-
-			do {
-				$o=new $class;
-				$statement->setFetchMode(PDO::FETCH_INTO,$o);
-				$o=$statement->fetch(); //PDO::FETCH_INTO,$o);
-
-				if ($o)
-					$res[]=$o;
-			} while ($o);
-
-			return $res;
-		}
-
-		/**
-		 * Hydrate from query.
-		 */
-		public static function hydrateFromQuery($query, $parameters=array()) {
-			self::init();
-			$conf=self::$classes[get_called_class()];
-
-			$statement=self::$pdo->prepare($query);
-
-			return self::hydrateFromStatement($statement,$parameters);
-		}
-
-		/**
-		 * Find all.
-		 */
-		public static function findAll() {
-			self::init();
-			$conf=self::$classes[get_called_class()];
-
-			$statement=self::$pdo->prepare("SELECT * FROM $conf[table]");
-
-			return self::hydrateFromStatement($statement);
-		}
-
-		/**
-		 * Find one by id.
-		 */
-		public static function findOne($id) {
-			self::init();
-			$conf=self::$classes[get_called_class()];
-
-			$statement=self::$pdo->prepare("SELECT * FROM $conf[table] WHERE $conf[primaryKey]=:id");
-
-			$res=self::hydrateFromStatement($statement,array("id"=>$id));
-			return $res[0];
 		}
 
 		/**
 		 * Delete this item.
 		 */
-		public final function delete() {
+		public static final function delete() {
 			self::init();
 			$conf=self::$classes[get_called_class()];
 
@@ -287,22 +234,82 @@
 		/**
 		 * Find all by query.
 		 */
-		public final function findAllByQuery($query, $params=array()) {
-			self::init();
-			$conf=self::$classes[get_called_class()];
+		public static final function findAllByQuery($query, $params=array()) {
+			$conf=self::getConf();
 
-			return self::hydrateFromQuery($query,$params);
+			$query=str_replace(":table",self::getFullTableName(),$query);
+
+			$statement=self::$pdo->prepare($query);
+			if (!$statement)
+				throw new Exception("Unable to create query");
+
+			if (!$statement->execute($params))
+				throw new Exception("Unable to run query: ".join(",",$statement->errorInfo()));
+
+			$class=get_called_class();
+			$res=array();
+
+			do {
+				$o=new $class;
+				$statement->setFetchMode(PDO::FETCH_INTO,$o);
+				$o=$statement->fetch();
+
+				if ($o)
+					$res[]=$o;
+			} while ($o);
+
+			return $res;
 		}
 
 		/**
 		 * Find one by query.
 		 */
-		public final function findOneByQuery($query, $params=array()) {
+		public static final function findOneByQuery($query, $params=array()) {
 			$all=self::findAllByQuery($query,$params);
 
 			if (!sizeof($all))
 				return NULL;
 
 			return $all[0];
+		}
+
+		/**
+		 * Find all.
+		 */
+		public static final function findAll() {
+			return self::findAllByQuery("SELECT * FROM :table");
+		}
+
+		/**
+		 * Find all by value.
+		 */
+		public static final function findAllBy($field, $value) {
+			return self::findAllByQuery(
+				"SELECT * FROM :table WHERE $field=:value",
+				array(
+					"value"=>$value
+				)
+			);
+		}
+
+		/**
+		 * Find one by value.
+		 */
+		public static final function findOneBy($field, $value) {
+			$res=self::findAllBy($field,$value);
+
+			if (!sizeof($res))
+				return NULL;
+
+			return $res[0];
+		}
+
+		/**
+		 * Find one by id.
+		 */
+		public static final function findOne($id) {
+			$conf=self::getConf();
+
+			return self::findOneBy($conf["primaryKey"],$id);
 		}
 	}

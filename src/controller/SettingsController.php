@@ -16,12 +16,15 @@
 			$this->settings=array(array(
 				"setting"=>"blockchainaccounts_wallet_id",
 				"title"=>"Wallet id",
+				"description"=>"You wallet id at blockchain.info"
 			), array(
 				"setting"=>"blockchainaccounts_wallet_password",
 				"title"=>"Wallet password",
+				"description"=>"Your password at blockchain.info"
 			), array(
 				"setting"=>"blockchainaccounts_notification_key",
 				"title"=>"Notifications key",
+				"description"=>"This key is used to identify incoming notifications"
 			));
 
 			add_action('admin_menu',array($this,'admin_menu'));
@@ -56,8 +59,14 @@
 		 * Create the settings page.
 		 */
 		public function create_settings_page() {
+			$notificationUrl=
+				plugins_url().
+				"/wpblockchainaccounts/notification.php?key=".
+				get_option("blockchainaccounts_notification_key");
+
 			$template=new Template(__DIR__."/../template/settings.tpl.php");
 			$template->set("settings",$this->settings);
+			$template->set("notificationUrl",$notificationUrl);
 			$template->show();
 		}
 	}
