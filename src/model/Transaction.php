@@ -12,6 +12,7 @@
 		const PROCESSING="processing";
 		const COMPLETE="complete";
 		const CONFIRMING="confirming";
+		const SHEDULED="sheduled";
 
 		/**
 		 * Construct.
@@ -29,7 +30,7 @@
 				return BitcoinUtil::fromSatoshi($denomination, $this->toAccountBalance);
 
 			if ($account->id==$this->fromAccountId)
-				return ButcoinUtil::fromSatoshi($denomination, $this->fromAccountBalance);
+				return BitcoinUtil::fromSatoshi($denomination, $this->fromAccountBalance);
 
 			return NULL;
 		}
@@ -45,6 +46,13 @@
 				return -BitcoinUtil::fromSatoshi($denomination, $this->amount);
 
 			return NULL;
+		}
+
+		/**
+		 * Set amount.
+		 */
+		public function setAmount($denomination, $amount) {
+			$this->amount=BitcoinUtil::toSatoshi($denomination,$amount);
 		}
 
 		/**

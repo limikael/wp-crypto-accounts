@@ -114,4 +114,27 @@
 				)
 			);
 		}
+
+		/**
+		 * Withdraw funds.
+		 */
+		public function withdraw($denomination, $address, $amount) {
+			if ($amount<0 || $amount>$this->getBalance($denomination))
+				throw new Exception("Insufficient funds on account.");
+
+			if ($this->entity_type!="user")
+				throw new Exception("Can only withdraw from user accounts.");
+
+			$this->balance-=BitcoinUtil::toSatoshi($denomination,$amount);
+
+			$t=new Transaction();
+			$t->fromAccountId=$this->id;
+			$t->fromAccountBalance=$this->balance;
+			$t->setAmount($denomination,$amount);
+			$t->state=Transaction::SHEDULED;
+			$t->notice="Withdraw";
+			$t->save();
+
+			$this->save();
+		}
 	}

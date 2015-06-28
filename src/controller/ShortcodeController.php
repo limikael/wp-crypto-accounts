@@ -113,14 +113,38 @@
 			if (!$account)
 				return "<i>not logged in</i>";
 
-			$action=$_SERVER["PHP_SELF"];
+			$afterWithdraw=$_SERVER["PHP_SELF"];
 
 			if ($p["submit_attributes"])
-				$action.="?".$p["submit_attributes"];
+				$afterWithdraw.="?".$p["submit_attributes"];
 
 			$template=new Template(__DIR__."/../template/withdraw.tpl.php");
-			$template->set("denomination",$denom);
-			$template->set("action",$action);
+			$template->set("denomination",$p["denomination"]);
+			$template->set("action",plugins_url()."/wpblockchainaccounts/withdraw.php");
+			$template->set("afterWithdraw",$afterWithdraw);
+			$template->set("amount","");
+			$template->set("address","");
+
+			if (!session_id())
+				session_start();
+
+			if (isset($_SESSION["bca_withdraw_success"]))
+				$template->set("success",$_SESSION["bca_withdraw_success"]);
+
+			if (isset($_SESSION["bca_withdraw_error"]))
+				$template->set("error",$_SESSION["bca_withdraw_error"]);
+
+			if (isset($_SESSION["bca_withdraw_amount"]))
+				$template->set("amount",$_SESSION["bca_withdraw_amount"]);
+
+			if (isset($_SESSION["bca_withdraw_address"]))
+				$template->set("address",$_SESSION["bca_withdraw_address"]);
+
+			unset($_SESSION["bca_withdraw_success"]);
+			unset($_SESSION["bca_withdraw_error"]);
+			unset($_SESSION["bca_withdraw_amount"]);
+			unset($_SESSION["bca_withdraw_address"]);
+
 			return $template->render();
 		}
 	}

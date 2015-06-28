@@ -22,7 +22,7 @@
 			<td>
 				<?php if ($item->state=="complete") { ?>
 					<?php echo $transaction["balance"]; ?>
-				<?php } else { ?>)
+				<?php } else { ?>
 					<?php echo $item->state; ?>
 				<?php } ?>
 			</td>

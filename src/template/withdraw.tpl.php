@@ -15,7 +15,7 @@
         <tr valign="top">
             <th scope="row">Address</th>
             <td>
-                <input type="text" name="<?php echo $setting["setting"]; ?>" 
+                <input type="text" name="address" 
                     value="<?php echo $address; ?>" 
                     class="regular-text"/>
                 <p class="description">
@@ -27,7 +27,7 @@
         <tr valign="top">
             <th scope="row">Amount</th>
             <td>
-                <input type="text" name="<?php echo $setting["setting"]; ?>" 
+                <input type="text" name="amount" 
                     value="<?php echo $amount; ?>" 
                     class="regular-text"/>
                 <p class="description">
@@ -37,6 +37,8 @@
         </tr>
 	</table>
 
-	<input type="submit" value="Withdraw" />
-
+    <input type="hidden" name="action" value="withdraw"/>
+    <input type="hidden" name="afterWithdraw" value="<?php echo $afterWithdraw; ?>"/>
+    <input type="hidden" name="denomination" value="<?php echo $denomination; ?>"/>
+	<input type="submit" value="Withdraw"/>
 </form>
