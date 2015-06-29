@@ -1,5 +1,9 @@
 <?php
 
+	namespace wpblockchainaccounts;
+
+	use \Exception;
+
 	class ActiveRecord {
 
 		private static $classes=array();
@@ -48,8 +52,11 @@
 
 			static::initialize();
 
-			if (!isset(self::$classes[$class]["table"]))
-				self::$classes[$class]["table"]=self::$tablePrefix.strtolower(get_called_class());
+			if (!isset(self::$classes[$class]["table"])) {
+				$a=explode("\\",get_called_class());
+				$s=strtolower($a[sizeof($a)-1]);
+				self::$classes[$class]["table"]=self::$tablePrefix.$s;
+			}
 		}
 
 		/**

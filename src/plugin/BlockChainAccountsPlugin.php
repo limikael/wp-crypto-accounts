@@ -1,5 +1,7 @@
 <?php
 
+	namespace wpblockchainaccounts;
+
 	require_once __DIR__."/../utils/Singleton.php";
 	require_once __DIR__."/../utils/BlockchainWallet.php";
 	require_once __DIR__."/../model/Account.php";
@@ -20,7 +22,7 @@
 			$mainFile=WP_PLUGIN_DIR."/wpblockchainaccounts/wpblockchainaccounts.php";
 
 			register_activation_hook($mainFile,array($this,"activate"));
-			register_uninstall_hook($mainFile,array("BlockChainAccountsPlugin","uninstall"));
+			register_uninstall_hook($mainFile,array("wpblockchainaccounts\\BlockChainAccountsPlugin","uninstall"));
 
 			$this->optionDefaults=array(
 				"blockchainaccounts_wallet_id"=>NULL,

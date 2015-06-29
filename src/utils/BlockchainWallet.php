@@ -1,5 +1,7 @@
 <?php
 
+	namespace wpblockchainaccounts;
+
 	require_once __DIR__."/CurlUtil.php";
 
 	/**

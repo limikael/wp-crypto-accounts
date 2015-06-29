@@ -1,5 +1,9 @@
 <?php
 
+	namespace wpblockchainaccounts;
+
+	use \PDO;
+
 	/**
 	 * Wordpress utils.
 	 */

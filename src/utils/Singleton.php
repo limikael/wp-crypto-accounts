@@ -1,5 +1,7 @@
 <?php
 
+	namespace wpblockchainaccounts;
+
 	/**
 	 * Singleton
 	 */

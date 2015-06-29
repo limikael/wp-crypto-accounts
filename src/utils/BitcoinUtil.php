@@ -1,5 +1,7 @@
 <?php
 
+	namespace wpblockchainaccounts;
+
 	/**
 	 * Bitcoin utilities.
 	 */

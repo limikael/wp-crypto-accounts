@@ -1,5 +1,7 @@
 <?php
 
+	namespace wpblockchainaccounts;
+
 	/**
 	 * Echo for attribute.
 	 */
