@@ -5,8 +5,10 @@
 	require_once __DIR__."/../../ext/smartrecord/SmartRecord.php";
 	require_once __DIR__."/../utils/BitcoinUtil.php";
 	require_once __DIR__."/../plugin/BlockChainAccountsPlugin.php";
+	require_once __DIR__."/Account.php";
 
 	use \SmartRecord;
+	use \Exception;
 
 	/**
 	 * An account transaction.
@@ -24,6 +26,42 @@
 		public function __construct() {
 			$this->timestamp=time();
 			$this->state=Transaction::PROCESSING;
+		}
+
+		/**
+		 * Get from account.
+		 */
+		public function getFromAccount() {
+			if (!$this->fromAccount)
+				$this->fromAccount=Account::findOne($this->fromAccountId);
+
+			return $this->fromAccount;
+		}
+
+		/**
+		 * Get to account.
+		 */
+		public function getToAccount() {
+			if (!$this->toAccount)
+				$this->toAccount=Account::findOne($this->toAccountId);
+
+			return $this->toAccount;
+		}
+
+		/**
+		 * Set to account.
+		 */
+		public function setToAccount($account) {
+			$this->toAccount=$account;
+			$this->toAccountId=$account->id;
+		}
+
+		/**
+		 * Set from account.
+		 */
+		public function setFromAccount($account) {
+			$this->fromAccount=$account;
+			$this->fromAccountId=$account->id;
 		}
 
 		/**
@@ -57,6 +95,33 @@
 		 */
 		public function setAmount($denomination, $amount) {
 			$this->amount=BitcoinUtil::toSatoshi($denomination,$amount);
+		}
+
+		/**
+		 * Perform transaction.
+		 */
+		public function perform() {
+			if ($this->state!=Transaction::PROCESSING)
+				throw new Exception("Unexpected transaction state: ".$this->state);
+
+			if ($this->amount<0)
+				throw new Exception("Negative amount for transaction.");
+
+			$toAccount=$this->getToAccount();
+			$fromAccount=$this->getFromAccount();
+
+			if ($fromAccount->balance<$this->amount)
+				throw new Exception("Insufficient funds on account.");
+
+			$fromAccount->balance-=$this->amount;
+			$toAccount->balance+=$this->amount;
+			$this->fromAccountBalance=$fromAccount->balance;
+			$this->toAccountBalance=$toAccount->balance;
+			$this->state=Transaction::COMPLETE;
+
+			$fromAccount->save();
+			$toAccount->save();
+			$this->save();
 		}
 
 		/**

@@ -48,8 +48,12 @@
 
 		/**
 		 * Get user account.
+		 * It is possible to pass a user or a user id as argument.
 		 */
 		public static function getUserAccount($user_id) {
+			if (is_object($user_id))
+				$user_id=$user_id->ID;
+
 			if (!$user_id)
 				return;
 

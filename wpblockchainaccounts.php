@@ -10,11 +10,15 @@ Version: 0.0.1
 	require_once __DIR__."/src/controller/ShortcodeController.php";
 	require_once __DIR__."/src/controller/SettingsController.php";
 	require_once __DIR__."/src/utils/WpUtil.php";
+	require_once __DIR__."/src/model/Account.php";
+	require_once __DIR__."/src/model/Transaction.php";
 
 	use wpblockchainaccounts\WpUtil;
 	use wpblockchainaccounts\BlockChainAccountsPlugin;
 	use wpblockchainaccounts\ShortcodeController;
 	use wpblockchainaccounts\SettingsController;
+	use wpblockchainaccounts\Account;
+	use wpblockchainaccounts\Transaction;
 
 	BlockChainAccountsPlugin::init();
 	ShortcodeController::init();
@@ -41,9 +45,10 @@ Version: 0.0.1
 	if (!function_exists("bca_make_transaction")) {
 		function bca_make_transaction($denomination, $fromAccount, $toAccount, $amount, $message=NULL) {
 			$t=new Transaction();
-			$t->fromAccount=$fromAccount;
-			$t->toAccount=$toAccount;
+			$t->setFromAccount($fromAccount);
+			$t->setToAccount($toAccount);
 			$t->setAmount($denomination,$amount);
+			$t->notice=$message;
 			$t->perform();
 
 			return $t->id;

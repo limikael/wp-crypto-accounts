@@ -15,6 +15,12 @@
 
 	$transaction=Transaction::findOneBy("transactionHash",$_REQUEST["transaction_hash"]);
 
+	if (!$_REQUEST["input_address"])
+		exit("expected input address");
+
+	if (!$_REQUEST["transaction_hash"])
+		exit("expected transaction_hash");
+
 	if (!$transaction) {
 		$account=Account::findOneBy("depositAddress",$_REQUEST["input_address"]);
 
