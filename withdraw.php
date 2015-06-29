@@ -1,17 +1,14 @@
 <?php
 
 	require_once __DIR__."/src/utils/WpUtil.php";
-	require_once __DIR__."/src/utils/ActiveRecord.php";
 	require_once __DIR__."/src/model/Transaction.php";
 	require_once __DIR__."/src/model/Account.php";
 
+	use wpblockchainaccounts\WpUtil;
+	use wpblockchainaccounts\Transaction;
+	use wpblockchainaccounts\Account;
+
 	require_once WpUtil::getWpLoadPath();
-
-	ActiveRecord::setTablePrefix(WpUtil::getTablePrefix());
-	ActiveRecord::setPdo(WpUtil::getCompatiblePdo());
-
-	if (!session_id())
-		session_start();
 
 	$account=Account::getCurrentUserAccount();
 

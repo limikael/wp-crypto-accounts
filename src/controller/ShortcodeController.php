@@ -126,12 +126,7 @@
 			$template->set("afterWithdraw",$afterWithdraw);
 			$template->set("amount","");
 			$template->set("address","");
-
-			if (!session_id())
-				session_start();
-
-			if (isset($_SESSION["bca_withdraw_success"]))
-				$template->set("success",$_SESSION["bca_withdraw_success"]);
+			$template->set("showForm",TRUE);
 
 			if (isset($_SESSION["bca_withdraw_error"]))
 				$template->set("error",$_SESSION["bca_withdraw_error"]);
@@ -141,6 +136,12 @@
 
 			if (isset($_SESSION["bca_withdraw_address"]))
 				$template->set("address",$_SESSION["bca_withdraw_address"]);
+
+			if (isset($_SESSION["bca_withdraw_success"])) {
+				$template->set("success",$_SESSION["bca_withdraw_success"]);
+				$template->set("showForm",FALSE);
+				$template->set("action",$afterWithdraw);
+			}
 
 			unset($_SESSION["bca_withdraw_success"]);
 			unset($_SESSION["bca_withdraw_error"]);

@@ -1,14 +1,14 @@
 <?php
 
 	require_once __DIR__."/src/utils/WpUtil.php";
-	require_once __DIR__."/src/utils/ActiveRecord.php";
 	require_once __DIR__."/src/model/Transaction.php";
 	require_once __DIR__."/src/model/Account.php";
 
-	require_once WpUtil::getWpLoadPath();
+	use wpblockchainaccounts\WpUtil;
+	use wpblockchainaccounts\Transaction;
+	use wpblockchainaccounts\Account;
 
-	ActiveRecord::setTablePrefix(WpUtil::getTablePrefix());
-	ActiveRecord::setPdo(WpUtil::getCompatiblePdo());
+	require_once WpUtil::getWpLoadPath();
 
 	if ($_REQUEST["key"]!=get_option("blockchainaccounts_notification_key"))
 		exit("Wrong key");

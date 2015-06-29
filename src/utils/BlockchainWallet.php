@@ -4,6 +4,8 @@
 
 	require_once __DIR__."/CurlUtil.php";
 
+	use \Exception;
+
 	/**
 	 * Abstraction for managing a blockchain wallet.
 	 */
@@ -17,7 +19,7 @@
 		 * The wallet url should be something like:
 		 * https://blockchain.info/merchant/<walletid>
 		 */
-		public function BlockchainWallet($walletUrl, $password) {
+		public function __construct($walletUrl, $password) {
 			if (parse_url($walletUrl,PHP_URL_SCHEME))
 				$this->walletUrl=$walletUrl;
 

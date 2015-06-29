@@ -1,0 +1,3 @@
+[submodule "ext/smartrecord"]
+	path = ext/smartrecord
+	url = https://github.com/limikael/smartrecord.git

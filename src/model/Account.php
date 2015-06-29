@@ -2,15 +2,18 @@
 
 	namespace wpblockchainaccounts;
 
-	require_once __DIR__."/../utils/ActiveRecord.php";
+	require_once __DIR__."/../../ext/smartrecord/SmartRecord.php";
 	require_once __DIR__."/../utils/BitcoinUtil.php";
 	require_once __DIR__."/../plugin/BlockChainAccountsPlugin.php";
 	require_once __DIR__."/Transaction.php";
 
+	use \SmartRecord;
+	use \Exception;
+
 	/**
 	 * Account abstraction.
 	 */
-	class Account extends ActiveRecord {
+	class Account extends SmartRecord {
 
 		/**
 		 * Constructor.
@@ -62,11 +65,10 @@
 				throw new Exception("Expected entity id");
 
 			$account=self::findOneByQuery(
-				"SELECT * FROM ".self::getFullTableName()." WHERE entity_type=:type AND entity_id=:id",
-				array(
-					":type"=>$entity_type,
-					":id"=>$entity_id
-			));
+				"SELECT * FROM %t WHERE entity_type=%s AND entity_id=%s",
+				$entity_type,
+				$entity_id
+			);
 
 			if (!$account) {
 				$account=new Account($entity_type, $entity_id);
@@ -91,29 +93,16 @@
 		}
 
 		/**
-		 * Set up fields.
-		 */
-		public static function initialize() {
-			self::addField("id","integer not null auto_increment");
-			self::addField("entity_id","integer");
-			self::addField("entity_type","varchar(255) not null");
-			self::addField("balance","integer not null");
-			self::addField("depositAddress","varchar(255)");
-		}
-
-		/**
 		 * Get transactions for this account.
 		 */
 		public function getTransactions() {
 			return Transaction::findAllByQuery(
 				"SELECT    * ".
 				"FROM      :table ".
-				"WHERE     toAccountId=:toId OR fromAccountId=:fromId ".
+				"WHERE     toAccountId=%s OR fromAccountId=%s ".
 				"ORDER BY  timestamp DESC",
-				array(
-					"toId"=>$this->id,
-					"fromId"=>$this->id
-				)
+				$this->id,
+				$this->id
 			);
 		}
 
@@ -138,5 +127,16 @@
 			$t->save();
 
 			$this->save();
+		}
+
+		/**
+		 * Set up fields.
+		 */
+		public static function initialize() {
+			self::field("id","integer not null auto_increment");
+			self::field("entity_id","integer");
+			self::field("entity_type","varchar(255) not null");
+			self::field("balance","integer not null");
+			self::field("depositAddress","varchar(255)");
 		}
 	}

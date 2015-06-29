@@ -14,11 +14,7 @@ Version: 0.0.1
 	use wpblockchainaccounts\WpUtil;
 	use wpblockchainaccounts\BlockChainAccountsPlugin;
 	use wpblockchainaccounts\ShortcodeController;
-	use wpblockchainaccounts\ActiveRecord;
 	use wpblockchainaccounts\SettingsController;
-
-	ActiveRecord::setTablePrefix(WpUtil::getTablePrefix());
-	ActiveRecord::setPdo(WpUtil::getCompatiblePdo());
 
 	BlockChainAccountsPlugin::init();
 	ShortcodeController::init();
