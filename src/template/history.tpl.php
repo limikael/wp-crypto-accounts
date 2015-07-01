@@ -1,4 +1,4 @@
-<table class="blockchainaccounts-transaction-table">
+<table class="blockchainaccounts-transaction-table" cellpadding="0" cellspacing="0">
 	<tr>
 		<th>Label</th>
 		<th>Time</th>

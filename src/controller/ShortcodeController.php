@@ -26,6 +26,15 @@
 
 			wp_register_style('wpblockchainaccounts', 
 				plugins_url()."/wpblockchainaccounts/res/wpblockchainaccounts.css");
+
+			add_action('wp_enqueue_scripts',array($this,'enqueue_scripts'));
+		}
+
+		/**
+		 * Enqueue scripts.
+		 */
+		public function enqueue_scripts() {
+			wp_enqueue_script("jquery");
 		}
 
 		/**
@@ -47,6 +56,7 @@
 		 * Show deposit address.
 		 */
 		public function bca_deposit() {
+			//wp_enqueue_script("jquery");
 			wp_enqueue_script("blockchainaccounts-jquery-qrcode");
 
 			$account=Account::getCurrentUserAccount();
@@ -67,6 +77,9 @@
 		 * History.
 		 */
 		public function bca_history($p) {
+			$oldTimezone=date_default_timezone_get();
+			date_default_timezone_set(get_option('timezone_string'));
+
 			wp_enqueue_style("wpblockchainaccounts");
 
 			if (!isset($p["denomination"]))
@@ -96,6 +109,8 @@
 
 			$template=new Template(__DIR__."/../template/history.tpl.php");
 			$template->set("transactions",$transactions);
+
+			date_default_timezone_set($oldTimezone);
 
 			return $template->render();
 		}
