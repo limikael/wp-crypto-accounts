@@ -56,7 +56,9 @@
 		 * Show deposit address.
 		 */
 		public function bca_deposit() {
-			//wp_enqueue_script("jquery");
+			if (!BlockChainAccountsPlugin::init()->isSetup())
+				return "<i>Accounts are not set up</i>";
+
 			wp_enqueue_script("blockchainaccounts-jquery-qrcode");
 
 			$account=Account::getCurrentUserAccount();
@@ -77,6 +79,9 @@
 		 * History.
 		 */
 		public function bca_history($p) {
+			if (!BlockChainAccountsPlugin::init()->isSetup())
+				return "<i>Accounts are not set up</i>";
+
 			$oldTimezone=date_default_timezone_get();
 			date_default_timezone_set(get_option('timezone_string'));
 
@@ -119,6 +124,9 @@
 		 * Withdraw.
 		 */
 		public function bca_withdraw($p) {
+			if (!BlockChainAccountsPlugin::init()->isSetup())
+				return "<i>Accounts are not set up</i>";
+
 			if (!isset($p["denomination"]))
 				$p["denomination"]="bits";
 

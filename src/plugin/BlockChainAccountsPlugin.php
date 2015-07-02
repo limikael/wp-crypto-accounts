@@ -71,4 +71,15 @@
 			Account::uninstall();
 			Transaction::uninstall();
 		}
+
+		/**
+		 * Are we setup yet?
+		 */
+		public function isSetup() {
+			if (get_option("blockchainaccounts_wallet_id") &&
+					get_option("blockchainaccounts_wallet_password"))
+				return TRUE;
+
+			return FALSE;
+		}
 	}
