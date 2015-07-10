@@ -29,6 +29,6 @@
 		public function status() {
 			$r=new CurlRequest($this->url);
 			$r->setResultProcessing(CurlRequest::JSON);
-			$r->perform();
+			$r->exec();
 		}
 	}
