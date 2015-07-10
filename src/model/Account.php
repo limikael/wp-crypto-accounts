@@ -22,6 +22,7 @@
 			$this->entity_type=$entity_type;
 			$this->entity_id=$entity_id;
 			$this->balance=0;
+			$this->depositAddress=NULL;
 		}
 
 		/**

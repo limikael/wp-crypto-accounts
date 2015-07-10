@@ -1,0 +1,67 @@
+#!/usr/bin/env php
+<?php
+
+	require_once __DIR__."/../vendor/autoload.php";
+	require_once __DIR__."/../src/wpca/Wpca.php";
+
+	use Ulrichsg\Getopt\Getopt;
+	use Ulrichsg\Getopt\Option;
+
+	function usage($e=NULL) {
+		if ($e)
+			echo "$e\n\n";
+
+		echo "Usage: wpca [options] command\n";
+		echo "\nCommands:\n";
+		echo "  status                - Show status of unprocessed withdrawal transactions.\n";
+
+		echo "\nOptions:\n";
+		echo "  --url=<url>           - Specify api backend.\n";
+		echo "  --config=<file.ini>   - Load config from this file.\n";
+
+		echo "\n";
+
+		exit(1);
+	}
+
+	$getopt=new Getopt(array(
+		new Option("u","url",Getopt::REQUIRED_ARGUMENT),
+		new Option("c","config",Getopt::REQUIRED_ARGUMENT)
+	));
+
+	try {
+		$getopt->parse();
+		$options=$getopt->getOptions();
+		$operands=$getopt->getOperands();
+
+		if ($options["config"]) {
+			$iniOptions=parse_ini_file($options["config"]);
+			if ($iniOptions===FALSE)
+				throw new Exception("Unable to parse .ini file.");
+
+			$options=array_merge($options,$iniOptions);
+		}
+	}
+
+	catch (Exception $e) {
+		usage($e->getMessage());
+	}
+
+	if (!$options["url"])
+		usage("Url is required.");
+
+	if (sizeof($operands)!=1)
+		usage("Need one command.");
+
+	$wpca=new Wpca();
+	$wpca->setUrl($options["url"]);
+
+	switch ($operands[0]) {
+		case "status":
+			$wpca->status();
+			break;
+
+		default:
+			usage("Unknown command: ".$operands[0]);
+			break;
+	}

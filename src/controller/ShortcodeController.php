@@ -21,12 +21,6 @@
 			add_shortcode("bca_history", array($this, "bca_history"));
 			add_shortcode("bca_withdraw", array($this, "bca_withdraw"));
 
-			wp_register_script("blockchainaccounts-jquery-qrcode",
-				plugins_url()."/wpblockchainaccounts/res/jquery.qrcode-0.12.0.min.js");
-
-			wp_register_style('wpblockchainaccounts', 
-				plugins_url()."/wpblockchainaccounts/res/wpblockchainaccounts.css");
-
 			add_action('wp_enqueue_scripts',array($this,'enqueue_scripts'));
 		}
 
@@ -35,6 +29,12 @@
 		 */
 		public function enqueue_scripts() {
 			wp_enqueue_script("jquery");
+
+			wp_register_script("blockchainaccounts-jquery-qrcode",
+				plugins_url()."/wpblockchainaccounts/res/jquery.qrcode-0.12.0.min.js");
+
+			wp_register_style('wpblockchainaccounts', 
+				plugins_url()."/wpblockchainaccounts/res/wpblockchainaccounts.css");
 		}
 
 		/**

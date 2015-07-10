@@ -34,7 +34,7 @@
 			/*error_reporting(E_ALL);
 			ini_set('display_errors', 1);*/
 
-			if (!session_id())
+			if (!session_id() && php_sapi_name()!="cli")
 				session_start();
 		}
 
