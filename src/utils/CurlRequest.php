@@ -1,5 +1,7 @@
 <?php
 
+	namespace wpblockchainaccounts;
+
 	/**
 	 * Make a request using curl.
 	 */

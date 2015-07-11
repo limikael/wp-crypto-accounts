@@ -2,7 +2,7 @@
 
 	namespace wpblockchainaccounts;
 
-	require_once __DIR__."/CurlUtil.php";
+	require_once __DIR__."/CurlRequest.php";
 
 	use \Exception;
 
@@ -33,10 +33,7 @@
 		 * Create a new address.
 		 */
 		public function createNewAddress() {
-			$res=CurlUtil::jsonApiRequest(
-				$this->getWalletUrl()."/new_address",
-				array("password"=>$this->password));
-
+			$res=$this->createRequest("new_address")->exec();
 			$this->checkResponse($res);
 
 			if (!array_key_exists("address",$res))
@@ -49,13 +46,10 @@
 		 * Archive an address.
 		 */
 		public function archiveAddress($address) {
-			$res=CurlUtil::jsonApiRequest(
-				$this->getWalletUrl()."/archive_address",
-				array(
-					"password"=>$this->password,
-					"address"=>$address
-				));
+			$req=$this->createRequest("archive_address");
+			$req->setParam("address",$address);
 
+			$res=$req->exec();
 			$this->checkResponse($res);
 
 			if ($res["archived"]!=$address)
@@ -66,13 +60,10 @@
 		 * Get balance for specific address.
 		 */
 		public function getAddressBalance($address) {
-			$res=CurlUtil::jsonApiRequest(
-				$this->getWalletUrl()."/address_balance",
-				array(
-					"password"=>$this->password,
-					"address"=>$address
-				));
+			$req=$this->createRequest("address_balance");
+			$req->setParam("address",$address);
 
+			$res=$req->exec();
 			$this->checkResponse($res);
 
 			if (!array_key_exists("balance",$res))
@@ -85,10 +76,7 @@
 		 * Get total balance.
 		 */
 		public function getBalance() {
-			$res=CurlUtil::jsonApiRequest(
-				$this->getWalletUrl()."/balance",
-				array("password"=>$this->password));
-
+			$res=$this->createRequest("balance")->exec();
 			$this->checkResponse($res);
 
 			if (!array_key_exists("balance",$res))
@@ -101,10 +89,7 @@
 		 * List addresses.
 		 */
 		public function getAddressList() {
-			$res=CurlUtil::jsonApiRequest(
-				$this->getWalletUrl()."/list",
-				array("password"=>$this->password));
-
+			$res=$this->createRequest("list")->exec();
 			$this->checkResponse($res);
 
 			if (!array_key_exists("addresses",$res))
@@ -117,17 +102,15 @@
 		 * Send from specific address.
 		 */
 		public function sendFrom($fromAddress, $toAddress, $amount, $fee=NULL) {
-			$params=array();
-
-			$params["from"]=$fromAddress;
-			$params["to"]=$toAddress;
-			$params["amount"]=$amount;
-			$params["password"]=$this->password;
+			$req=$this->createRequest("payment");
+			$req->setParam("from",$fromAddress);
+			$req->setParam("to",$toAddress);
+			$req->setParam("amount",$amount);
 
 			if ($fee)
-				$params["fee"]=$fee;
+				$req->setParam("fee",$fee);
 
-			$res=CurlUtil::jsonApiRequest($this->getWalletUrl()."/payment",$params);
+			$res=$req->exec();
 			$this->checkResponse($res);
 
 			if (!$res["tx_hash"])
@@ -150,5 +133,16 @@
 		private function getWalletUrl() {
 			return $this->walletUrl."/";
 			//return BlockChainWallet::API_URL."/".$this->walledId."/";
+		}
+
+		/**
+		 * Create request for method.
+		 */
+		private function createRequest($method) {
+			$req=new CurlRequest($this->getWalletUrl()."/".$method);
+			$req->setResultProcessing(CurlRequest::JSON);
+			$req->setParam("password",$this->password);
+
+			return $req;
 		}
 	}
