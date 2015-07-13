@@ -120,6 +120,26 @@
 		}
 
 		/**
+		 * Send to address.
+		 */
+		public function send($toAddress, $amount, $fee=NULL) {
+			$req=$this->createRequest("payment");
+			$req->setParam("to",$toAddress);
+			$req->setParam("amount",$amount);
+
+			if ($fee)
+				$req->setParam("fee",$fee);
+
+			$res=$req->exec();
+			$this->checkResponse($res);
+
+			if (!$res["tx_hash"])
+				throw new Exception("Blockchain error");
+
+			return $res;
+		}
+
+		/**
 		 * Check the response for errors.
 		 */
 		private function checkResponse($res) {
@@ -128,18 +148,31 @@
 		}
 
 		/**
+		 * Ends with.
+		 */
+		private static function endsWith($haystack, $needle) {
+			return 
+				$needle === "" || 
+				(($temp = strlen($haystack) - strlen($needle)) >= 0 && strpos($haystack, $needle, $temp) !== FALSE);
+		}
+
+		/**
 		 * Get wallet url.
 		 */
 		private function getWalletUrl() {
-			return $this->walletUrl."/";
-			//return BlockChainWallet::API_URL."/".$this->walledId."/";
+			$w=$this->walletUrl;
+
+			if (!self::endsWith($w,"/"))
+				$w.="/";
+
+			return $w;
 		}
 
 		/**
 		 * Create request for method.
 		 */
 		private function createRequest($method) {
-			$req=new CurlRequest($this->getWalletUrl()."/".$method);
+			$req=new CurlRequest($this->getWalletUrl().$method);
 			$req->setResultProcessing(CurlRequest::JSON);
 			$req->setParam("password",$this->password);
 

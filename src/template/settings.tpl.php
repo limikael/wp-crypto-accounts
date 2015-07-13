@@ -9,7 +9,8 @@
 
     <h3>Setup</h3>
     <p>
-        Configure blockchain.info to use the following url for notifications:
+        This section contains information about how to set up blockchain.info and 
+        the wpca command.
     </p>
     <table class="form-table">
         <tr valign="top">
@@ -20,6 +21,18 @@
                     class="regular-text"/>
                 <p class="description">
                     Copy and paste this into the url settings at blockchain.info
+                </p>
+            </td>
+        </tr>
+
+        <tr valign="top">
+            <th scope="row">WPCA api url</th>
+            <td>
+                <input type="text"
+                    value="<?php echo $wpcaUrl; ?>" 
+                    class="regular-text"/>
+                <p class="description">
+                    Use this address as the --url parameter for wpca when managing withdrawals.
                 </p>
             </td>
         </tr>

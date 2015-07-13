@@ -2,6 +2,8 @@
 
 	namespace wpblockchainaccounts;
 
+	use \Exception;
+
 	/**
 	 * Make a request using curl.
 	 */
@@ -14,6 +16,7 @@
 		private $params;
 		private $resultProcessing;
 		private $result;
+		private $mockHandler;
 
 		/**
 		 * Constructor.
@@ -31,10 +34,19 @@
 		}
 
 		/**
+		 * Set mock handler.
+		 */
+		public function setMockHandler($f) {
+			$this->mockHandler=$f;
+		}
+
+		/**
 		 * Set param.
 		 */
 		public function setParam($param, $value) {
 			$this->params[$param]=$value;
+
+			return $this;
 		}
 
 		/**
@@ -42,12 +54,22 @@
 		 */
 		public function setResultProcessing($processing) {
 			$this->resultProcessing=$processing;
+
+			return $this;
 		}
 
 		/**
 		 * Run.
 		 */
 		public function exec() {
+			if ($this->mockHandler) {
+				$f=$this->mockHandler;
+
+				$this->result=$f($this->params);
+
+				return $this->result;
+			}
+
 			$url=$this->url;
 
 			if (sizeof($this->params)) {

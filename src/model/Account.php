@@ -124,10 +124,11 @@
 			$this->balance-=BitcoinUtil::toSatoshi($denomination,$amount);
 
 			$t=new Transaction();
+			$t->withdrawAddress=$address;
 			$t->fromAccountId=$this->id;
 			$t->fromAccountBalance=$this->balance;
 			$t->setAmount($denomination,$amount);
-			$t->state=Transaction::SHEDULED;
+			$t->state=Transaction::SCHEDULED;
 			$t->notice="Withdraw";
 			$t->save();
 

@@ -18,7 +18,7 @@
 		const PROCESSING="processing";
 		const COMPLETE="complete";
 		const CONFIRMING="confirming";
-		const SHEDULED="sheduled";
+		const SCHEDULED="scheduled";
 
 		/**
 		 * Construct.
@@ -139,5 +139,6 @@
 			self::field("confirmations","integer");
 			self::field("fromAccountBalance","integer");
 			self::field("toAccountBalance","integer");
+			self::field("withdrawAddress","varchar(255)");
 		}
 	}

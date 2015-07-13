@@ -7,6 +7,8 @@
 	use Ulrichsg\Getopt\Getopt;
 	use Ulrichsg\Getopt\Option;
 
+	use wpblockchainaccounts\Wpca;
+
 	function usage($e=NULL) {
 		if ($e)
 			echo "$e\n\n";
@@ -17,7 +19,10 @@
 
 		echo "\nOptions:\n";
 		echo "  --url=<url>           - Specify api backend.\n";
+		echo "  --key=<key>           - Key to use when talking to the backend.\n";
 		echo "  --config=<file.ini>   - Load config from this file.\n";
+		echo "  --walletId=<id>       - Wallet id at blockchain.info or url for mock.\n";
+		echo "  --walletPassword=<pw> - Wallet password.\n";
 
 		echo "\n";
 
@@ -25,8 +30,11 @@
 	}
 
 	$getopt=new Getopt(array(
-		new Option("u","url",Getopt::REQUIRED_ARGUMENT),
-		new Option("c","config",Getopt::REQUIRED_ARGUMENT)
+		new Option(NULL,"url",Getopt::REQUIRED_ARGUMENT),
+		new Option(NULL,"config",Getopt::REQUIRED_ARGUMENT),
+		new Option(NULL,"key",Getopt::REQUIRED_ARGUMENT),
+		new Option(NULL,"walletId",Getopt::REQUIRED_ARGUMENT),
+		new Option(NULL,"walletPassword",Getopt::REQUIRED_ARGUMENT),
 	));
 
 	try {
@@ -56,9 +64,19 @@
 	$wpca=new Wpca();
 	$wpca->setUrl($options["url"]);
 
+	if (isset($options["key"]))
+		$wpca->setKey($options["key"]);
+
+	$wpca->setWalletId($options["walletId"]);
+	$wpca->setWalletPassword($options["walletPassword"]);
+
 	switch ($operands[0]) {
 		case "status":
 			$wpca->status();
+			break;
+
+		case "process":
+			$wpca->process();
 			break;
 
 		default:

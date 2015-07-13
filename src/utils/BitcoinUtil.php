@@ -2,6 +2,8 @@
 
 	namespace wpblockchainaccounts;
 
+	use \Exception;
+
 	/**
 	 * Bitcoin utilities.
 	 */

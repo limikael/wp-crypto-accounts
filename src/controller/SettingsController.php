@@ -66,9 +66,14 @@
 				"/wpblockchainaccounts/notification.php?key=".
 				get_option("blockchainaccounts_notification_key");
 
+			$wpcaUrl=
+				plugins_url().
+				"/wpblockchainaccounts/api.php";
+
 			$template=new Template(__DIR__."/../template/settings.tpl.php");
 			$template->set("settings",$this->settings);
 			$template->set("notificationUrl",$notificationUrl);
+			$template->set("wpcaUrl",$wpcaUrl);
 			$template->show();
 		}
 	}

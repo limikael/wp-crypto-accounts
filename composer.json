@@ -6,8 +6,10 @@
             "email": "li.mikael@gmail.com"
         }
     ],
-    "require": {},
-    "require-dev": {
+    "require": {
         "ulrichsg/getopt-php": "^2.3"
+    },
+    "require-dev": {
+        "limikael/blockchainwalletmock": "^0.0.13"
     }
 }

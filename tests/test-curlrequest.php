@@ -2,6 +2,8 @@
 
 	require_once __DIR__."/../src/utils/CurlRequest.php";
 
+	use wpblockchainaccounts\CurlRequest;
+
 	/**
 	 * CurlRequestTest
 	 */
@@ -29,5 +31,20 @@
 			$req->setUrl("http://dn.se");
 			$req->setResultProcessing(CurlRequest::JSON);
 			$req->exec();
+		}
+
+		/**
+		 * Test mocking.
+		 */
+		function testMock() {
+			$f=function($p) {
+				return "hello".$p["hello"];
+			};
+
+			$req=new CurlRequest();
+			$req->setMockHandler($f);
+			$req->setParam("hello","world");
+			$res=$req->exec();
+			$this->assertEquals($res,"helloworld");
 		}
 	}
