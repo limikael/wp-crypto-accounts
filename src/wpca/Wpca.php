@@ -18,6 +18,7 @@
 		private $key;
 		private $wallet;
 		private $mockApi;
+		private $secondWalletPassword;
 
 		/**
 		 * Constructor.
@@ -62,6 +63,13 @@
 		}
 
 		/**
+		 * Set second wallet password.
+		 */
+		public function setSecondWalletPassword($pw) {
+			$this->secondWalletPassword=$pw;
+		}
+
+		/**
 		 * Fail.
 		 */
 		private function fail($message) {
@@ -78,6 +86,9 @@
 					throw new Exception("Missing wallet id/password");
 
 				$this->wallet=new BlockchainWallet($this->walletId,$this->walletPassword);
+
+				if ($this->secondWalletPassword)
+					$this->wallet->setSecondPassword($this->secondWalletPassword);
 			}
 
 			return $this->wallet;
@@ -126,6 +137,20 @@
 
 			foreach ($res["transactions"] as $transaction)
 				$this->processTransaction($transaction["id"]);
+
+			$this->log(sizeof($res["transactions"])." transaction(s) processed.");
+		}
+
+		/**
+		 * Process continously.
+		 */
+		public function processInterval($secs) {
+			$this->log("Starting processing loop with ".$secs." second(s) interval(s).");
+
+			while (TRUE) {
+				$this->process();
+				sleep($secs);
+			}
 		}
 
 		/**
@@ -167,7 +192,7 @@
 		 * Log a message.
 		 */
 		private function log($message) {
-			echo $message."\n";
+			echo date("Y-m-d H:i:s")." ".$message."\n";
 		}
 
 		/**

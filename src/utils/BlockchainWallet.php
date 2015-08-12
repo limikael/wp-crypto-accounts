@@ -13,6 +13,7 @@
 
 		private $walletUrl;
 		private $password;
+		private $secondPassword;
 
 		/**
 		 * Constructor.
@@ -27,6 +28,13 @@
 				$this->walletUrl="https://blockchain.info/merchant/".$walletUrl;
 
 			$this->password=$password;
+		}
+
+		/**
+		 * Set second password.
+		 */
+		public function setSecondPassword($secondPassword) {
+			$this->secondPassword=$secondPassword;
 		}
 
 		/**
@@ -175,6 +183,9 @@
 			$req=new CurlRequest($this->getWalletUrl().$method);
 			$req->setResultProcessing(CurlRequest::JSON);
 			$req->setParam("password",$this->password);
+
+			if ($this->secondPassword)
+				$req->setParam("second_password",$this->secondPassword);
 
 			return $req;
 		}

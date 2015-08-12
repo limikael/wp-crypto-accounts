@@ -3,11 +3,13 @@
 
 	require_once __DIR__."/../vendor/autoload.php";
 	require_once __DIR__."/../src/wpca/Wpca.php";
+	require_once __DIR__."/../src/utils/PasswordUtil.php";
 
 	use Ulrichsg\Getopt\Getopt;
 	use Ulrichsg\Getopt\Option;
 
 	use wpblockchainaccounts\Wpca;
+	use wpblockchainaccounts\PasswordUtil;
 
 	function usage($e=NULL) {
 		if ($e)
@@ -24,6 +26,8 @@
 		echo "  --config=<file.ini>   - Load config from this file.\n";
 		echo "  --walletId=<id>       - Wallet id at blockchain.info or url for mock.\n";
 		echo "  --walletPassword=<pw> - Wallet password.\n";
+		echo "  --interval=<secs>     - Run continously and process transactions at intervals.\n";
+		echo "  --askSecondPass       - Ask interactivly for secondary password.\n";
 
 		echo "\n";
 
@@ -36,6 +40,8 @@
 		new Option(NULL,"key",Getopt::REQUIRED_ARGUMENT),
 		new Option(NULL,"walletId",Getopt::REQUIRED_ARGUMENT),
 		new Option(NULL,"walletPassword",Getopt::REQUIRED_ARGUMENT),
+		new Option(NULL,"interval",Getopt::REQUIRED_ARGUMENT),
+		new Option(NULL,"askSecondPass"),
 	));
 
 	try {
@@ -71,13 +77,27 @@
 	$wpca->setWalletId($options["walletId"]);
 	$wpca->setWalletPassword($options["walletPassword"]);
 
+	if (isset($options["askSecondPass"])) {
+		$pass=PasswordUtil::askPass("Secondary Blockchain Password");
+
+		//echo "p=".$pass."\n";
+
+		$wpca->setSecondWalletPassword($pass);
+	}
+
 	switch ($operands[0]) {
 		case "status":
 			$wpca->status();
 			break;
 
 		case "process":
-			$wpca->process();
+			if ($options["interval"]) {
+				$wpca->processInterval($options["interval"]);
+			}
+
+			else {
+				$wpca->process();
+			}
 			break;
 
 		default:
