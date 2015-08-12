@@ -125,6 +125,18 @@
 		}
 
 		/**
+		 * Get number of transactions in state.
+		 */
+		public static function getNumTransactionsForState($state) {
+			global $wpdb;
+
+			$q=$wpdb->prepare("SELECT COUNT(*) FROM ".self::getFullTableName()." WHERE state=%s",$state);
+			$res=$wpdb->get_var($q);
+
+			return $res;
+		}
+
+		/**
 		 * Set up fields.
 		 */
 		public static function initialize() {

@@ -16,6 +16,7 @@
 		echo "Usage: wpca [options] command\n";
 		echo "\nCommands:\n";
 		echo "  status                - Show status of unprocessed withdrawal transactions.\n";
+		echo "  process               - Process transactions in queue.\n";
 
 		echo "\nOptions:\n";
 		echo "  --url=<url>           - Specify api backend.\n";

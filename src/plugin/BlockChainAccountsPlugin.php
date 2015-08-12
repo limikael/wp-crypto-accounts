@@ -29,6 +29,7 @@
 				"blockchainaccounts_wallet_password"=>NULL,
 				"blockchainaccounts_notification_key"=>md5(rand().microtime()),
 				"blockchainaccounts_notifications"=>2,
+				"blockchainaccounts_lastcheck"=>NULL
 			);
 
 			/*error_reporting(E_ALL);

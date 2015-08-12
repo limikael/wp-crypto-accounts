@@ -7,6 +7,7 @@
 
 	use wpblockchainaccounts\CurlRequest;
 	use wpblockchainaccounts\BlockchainWallet;
+	use \Exception;
 
 	/**
 	 * Command line tool to handle scheduled withdrawals.
@@ -145,6 +146,21 @@
 
 			$this->log("Transaction queue has ".sizeof($res["transactions"])." transaction(s), ".
 				"the total amount is ".$total." satoshi.");
+
+			$r=$this->createRequest("ongoing");
+			$r->exec();
+
+			$res=$r->getResult();
+			if (!$res["ok"])
+				$this->fail($res["message"]);
+
+			$total=0;
+			foreach ($res["transactions"] as $transaction) {
+				$total+=$transaction["amount"];
+			}
+
+			$this->log("There are ".sizeof($res["transactions"])." transaction(s) currently processing, ".
+				$total." satoshi is being transmitted.");
 		}
 
 		/**

@@ -56,7 +56,10 @@
 			$contents=ob_get_contents();
 			ob_end_clean();
 
-			$this->assertEquals($contents,"Transaction queue has 1 transaction(s), the total amount is 5000 satoshi.\n");
+			$this->assertEquals($contents,
+				"Transaction queue has 1 transaction(s), the total amount is 5000 satoshi.\n".
+				"There are 0 transaction(s) currently processing, 0 satoshi is being transmitted.\n"
+			);
 
 			$wpca->process();
 			$this->assertEquals(4990,$wallet->getBalance());
@@ -69,7 +72,10 @@
 			$contents=ob_get_contents();
 			ob_end_clean();
 
-			$this->assertEquals($contents,"Transaction queue has 0 transaction(s), the total amount is 0 satoshi.\n");
+			$this->assertEquals($contents,
+				"Transaction queue has 0 transaction(s), the total amount is 0 satoshi.\n".
+				"There are 0 transaction(s) currently processing, 0 satoshi is being transmitted.\n"
+			);
 
 			$mockWalletServer->stop();
 		}

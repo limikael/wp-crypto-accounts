@@ -38,8 +38,13 @@
         </tr>
     </table>
 
-    <h3>Settings</h3>
+    <h3>Withdrawal Status</h3>
 
+    <b>Transactions in queue:</b> <?php echo $numTransactionsQueue; ?><br/>
+    <b>Transactions currenctly processing:</b> <?php echo $numTransactionsProcessing; ?><br/>
+    <b>Last api call for checking:</b> <?php echo $lastCheckCall; ?><br/>
+
+    <h3>Settings</h3>
     <form method="post" action="options.php">
         <?php settings_fields( 'blockchainaccounts' ); ?>
         <?php do_settings_sections( 'blockchainaccounts' ); ?>

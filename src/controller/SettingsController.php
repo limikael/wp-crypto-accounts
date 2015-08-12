@@ -4,6 +4,7 @@
 
 	require_once __DIR__."/../utils/Template.php";
 	require_once __DIR__."/../plugin/BlockChainAccountsPlugin.php";
+	require_once __DIR__."/../model/Transaction.php";
 	require_once __DIR__."/../utils/Singleton.php";
 
 	/**
@@ -74,6 +75,22 @@
 			$template->set("settings",$this->settings);
 			$template->set("notificationUrl",$notificationUrl);
 			$template->set("wpcaUrl",$wpcaUrl);
+
+			$template->set("numTransactionsQueue",Transaction::getNumTransactionsForState(Transaction::SCHEDULED));
+			$template->set("numTransactionsProcessing",Transaction::getNumTransactionsForState(Transaction::PROCESSING));
+
+			$lastcheck=get_option("blockchainaccounts_lastcheck");
+			if ($lastcheck) {
+				$s=date("Y-m-d H:i:s",$lastcheck);
+				$diff=human_time_diff(time(),$lastcheck);
+
+				$template->set("lastCheckCall",$s." (UTC), $diff ago.");
+			}
+
+			else {
+				$template->set("lastCheckCall","Never");
+			}
+
 			$template->show();
 		}
 	}

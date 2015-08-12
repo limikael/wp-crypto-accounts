@@ -33,6 +33,33 @@
 
 			$res["ok"]=1;
 
+			update_option("blockchainaccounts_lastcheck",time());
+
+			return $res;
+		}
+
+		/**
+		 * List ongoing transactions.
+		 */
+		public function ongoing() {
+			$transactions=Transaction::findAllBy("state",Transaction::PROCESSING);
+
+			$res=array();
+			$res["transactions"]=array();
+
+			foreach ($transactions as $transaction) {
+				$res["transactions"][]=array(
+					"id"=>$transaction->id,
+					"fromAccountId"=>$transaction->fromAccountId,
+					"amount"=>$transaction->amount,
+					"withdrawAddress"=>$transaction->withdrawAddress
+				);
+			}
+
+			$res["ok"]=1;
+
+			update_option("blockchainaccounts_lastcheck",time());
+
 			return $res;
 		}
 
