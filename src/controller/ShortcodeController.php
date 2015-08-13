@@ -31,10 +31,10 @@
 			wp_enqueue_script("jquery");
 
 			wp_register_script("blockchainaccounts-jquery-qrcode",
-				plugins_url()."/wpblockchainaccounts/res/jquery.qrcode-0.12.0.min.js");
+				plugins_url()."/wp-crypto-accounts/res/jquery.qrcode-0.12.0.min.js");
 
 			wp_register_style('wpblockchainaccounts', 
-				plugins_url()."/wpblockchainaccounts/res/wpblockchainaccounts.css");
+				plugins_url()."/wp-crypto-accounts/res/wpblockchainaccounts.css");
 		}
 
 		/**
