@@ -1,12 +1,12 @@
 <?php
 
 /*
-Plugin Name: BLockchain Accounts
-Plugin URI: http://github.com/limikael/wpblockchainaccounts
+Plugin Name: Crypto Accounts
+Plugin URI: http://github.com/limikael/wp-crypto-accounts
 Version: 0.0.1
 */
 
-	require_once __DIR__."/src/plugin/BlockChainAccountsPlugin.php";
+	require_once __DIR__."/src/plugin/CryptoAccountsPlugin.php";
 	require_once __DIR__."/src/controller/ShortcodeController.php";
 	require_once __DIR__."/src/controller/SettingsController.php";
 	require_once __DIR__."/src/utils/WpUtil.php";
@@ -14,13 +14,13 @@ Version: 0.0.1
 	require_once __DIR__."/src/model/Transaction.php";
 
 	use wpblockchainaccounts\WpUtil;
-	use wpblockchainaccounts\BlockChainAccountsPlugin;
+	use wpblockchainaccounts\CryptoAccountsPlugin;
 	use wpblockchainaccounts\ShortcodeController;
 	use wpblockchainaccounts\SettingsController;
 	use wpblockchainaccounts\Account;
 	use wpblockchainaccounts\Transaction;
 
-	BlockChainAccountsPlugin::init();
+	CryptoAccountsPlugin::init();
 	ShortcodeController::init();
 
 	if (is_admin()) {

@@ -4,7 +4,7 @@
 
 	require_once __DIR__."/../../ext/smartrecord/SmartRecord.php";
 	require_once __DIR__."/../utils/BitcoinUtil.php";
-	require_once __DIR__."/../plugin/BlockChainAccountsPlugin.php";
+	require_once __DIR__."/../plugin/CryptoAccountsPlugin.php";
 	require_once __DIR__."/Account.php";
 
 	use \SmartRecord;

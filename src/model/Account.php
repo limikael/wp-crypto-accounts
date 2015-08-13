@@ -4,7 +4,7 @@
 
 	require_once __DIR__."/../../ext/smartrecord/SmartRecord.php";
 	require_once __DIR__."/../utils/BitcoinUtil.php";
-	require_once __DIR__."/../plugin/BlockChainAccountsPlugin.php";
+	require_once __DIR__."/../plugin/CryptoAccountsPlugin.php";
 	require_once __DIR__."/Transaction.php";
 
 	use \SmartRecord;
@@ -37,8 +37,11 @@
 		 * Create if it doesn't exist.
 		 */
 		public function getDepositAddress() {
+			if (!CryptoAccountsPlugin::init()->isSetup())
+				return NULL;
+
 			if (!$this->depositAddress) {
-				$wallet=BlockChainAccountsPlugin::init()->getWallet();
+				$wallet=CryptoAccountsPlugin::init()->getWallet();
 
 				$this->depositAddress=$wallet->createNewAddress();
 				$this->save();

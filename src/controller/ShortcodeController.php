@@ -2,7 +2,7 @@
 
 	namespace wpblockchainaccounts;
 
-	require_once __DIR__."/../plugin/BlockChainAccountsPlugin.php";
+	require_once __DIR__."/../plugin/CryptoAccountsPlugin.php";
 	require_once __DIR__."/../utils/Singleton.php";
 	require_once __DIR__."/../utils/Template.php";
 	require_once __DIR__."/../model/Account.php";
@@ -56,7 +56,7 @@
 		 * Show deposit address.
 		 */
 		public function bca_deposit() {
-			if (!BlockChainAccountsPlugin::init()->isSetup())
+			if (!CryptoAccountsPlugin::init()->isSetup())
 				return "<i>Accounts are not set up</i>";
 
 			wp_enqueue_script("blockchainaccounts-jquery-qrcode");
@@ -79,7 +79,7 @@
 		 * History.
 		 */
 		public function bca_history($p) {
-			if (!BlockChainAccountsPlugin::init()->isSetup())
+			if (!CryptoAccountsPlugin::init()->isSetup())
 				return "<i>Accounts are not set up</i>";
 
 			$oldTimezone=date_default_timezone_get();
@@ -124,7 +124,7 @@
 		 * Withdraw.
 		 */
 		public function bca_withdraw($p) {
-			if (!BlockChainAccountsPlugin::init()->isSetup())
+			if (!CryptoAccountsPlugin::init()->isSetup())
 				return "<i>Accounts are not set up</i>";
 
 			if (!isset($p["denomination"]))

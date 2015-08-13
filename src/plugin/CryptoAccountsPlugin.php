@@ -10,7 +10,7 @@
 	/**
 	 * Main plugin class.
 	 */
-	class BlockChainAccountsPlugin extends Singleton {
+	class CryptoAccountsPlugin extends Singleton {
 
 		private $optionDefaults;
 		private $wallet;
@@ -19,10 +19,10 @@
 		 * Constructor.
 		 */
 		public function __construct() {
-			$mainFile=WP_PLUGIN_DIR."/wpblockchainaccounts/wpblockchainaccounts.php";
+			$mainFile=WP_PLUGIN_DIR."/wp-crypto-accounts/wp-crypto-accounts.php";
 
 			register_activation_hook($mainFile,array($this,"activate"));
-			register_uninstall_hook($mainFile,array("wpblockchainaccounts\\BlockChainAccountsPlugin","uninstall"));
+			register_uninstall_hook($mainFile,array("wp-crypto-accounts\\CryptoAccountsPlugin","uninstall"));
 
 			$this->optionDefaults=array(
 				"blockchainaccounts_wallet_id"=>NULL,
