@@ -145,7 +145,7 @@
 
 			$template=new Template(__DIR__."/../template/withdraw.tpl.php");
 			$template->set("denomination",$p["denomination"]);
-			$template->set("action",plugins_url()."/wpblockchainaccounts/withdraw.php");
+			$template->set("action",plugins_url()."/wp-crypto-accounts/withdraw.php");
 			$template->set("afterWithdraw",$afterWithdraw);
 			$template->set("amount","");
 			$template->set("address","");
