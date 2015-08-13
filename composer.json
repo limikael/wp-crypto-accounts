@@ -1,5 +1,7 @@
 {
-    "name": "limikael/wpblockchainaccounts",
+    "name": "limikael/wp-crypto-accounts",
+    "description": "Be a bank for your wordpress users",
+    "bin": ["bin/wpca"],
     "authors": [
         {
             "name": "Mikael Lindqvist",
