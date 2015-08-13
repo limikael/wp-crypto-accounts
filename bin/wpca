@@ -1,7 +1,20 @@
 #!/usr/bin/env php
 <?php
 
-	require_once __DIR__."/../vendor/autoload.php";
+	$autoloadfiles=array(
+		__DIR__."/../vendor/autoload.php",
+		__DIR__."/../../../autoload.php",
+	);
+
+	foreach ($autoloadfiles as $file)
+		if (file_exists($file))
+			$autoloadfile=$file;
+
+	if (!isset($autoloadfile))
+		throw new Exception("Can't find autoload.php");
+
+	require_once $autoloadfile;
+
 	require_once __DIR__."/../src/wpca/Wpca.php";
 	require_once __DIR__."/../src/utils/PasswordUtil.php";
 
