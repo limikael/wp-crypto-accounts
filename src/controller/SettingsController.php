@@ -64,12 +64,12 @@
 		public function create_settings_page() {
 			$notificationUrl=
 				plugins_url().
-				"/wpblockchainaccounts/notification.php?key=".
+				"/wp-crypto-accounts/notification.php?key=".
 				get_option("blockchainaccounts_notification_key");
 
 			$wpcaUrl=
 				plugins_url().
-				"/wpblockchainaccounts/api.php";
+				"/wp-crypto-accounts/api.php";
 
 			$template=new Template(__DIR__."/../template/settings.tpl.php");
 			$template->set("settings",$this->settings);
