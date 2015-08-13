@@ -3,7 +3,7 @@ wpblockchainaccounts
 
 Allow Wordpress users to deposit and withdraw bitcoin.
 
-More documentation to come...
+More documentation to come.
 
 Running tests
 -------------
