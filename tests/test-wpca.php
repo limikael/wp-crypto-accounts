@@ -7,7 +7,7 @@
 
 	use wpblockchainaccounts\Wpca;
 	use wpblockchainaccounts\ApiController;
-	use wpblockchainaccounts\BlockChainAccountsPlugin;
+	use wpblockchainaccounts\CryptoAccountsPlugin;
 	use wpblockchainaccounts\BitcoinUtil;
 	use wpblockchainaccounts\CurlRequest;
 	use wpblockchainaccounts\BlockchainWallet;
@@ -16,7 +16,7 @@
 
 	class WpcaTest extends WP_UnitTestCase {
 		public function testScheduled() {
-			BlockChainAccountsPlugin::init()->activate();
+			CryptoAccountsPlugin::init()->activate();
 
 			$user_id = $this->factory->user->create();
 			$user=get_user_by("id",$user_id);

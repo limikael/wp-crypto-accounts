@@ -109,7 +109,7 @@
 					$decoded=json_decode($res,TRUE);
 
 					if ($decoded===NULL) {
-						echo $res;
+						//echo $res;
 						throw new Exception("Unable to parse json");
 					}
 

@@ -21,6 +21,9 @@
 	if (!$_REQUEST["transaction_hash"])
 		exit("expected transaction_hash");
 
+	if ($_REQUEST["value"]<0)
+		exit("*ok*");
+
 	if (!$transaction) {
 		$account=Account::findOneBy("depositAddress",$_REQUEST["input_address"]);
 
