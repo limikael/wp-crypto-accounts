@@ -62,7 +62,7 @@
 		$options=$getopt->getOptions();
 		$operands=$getopt->getOperands();
 
-		if ($options["config"]) {
+		if (isset($options["config"])) {
 			$iniOptions=parse_ini_file($options["config"]);
 			if ($iniOptions===FALSE)
 				throw new Exception("Unable to parse .ini file.");
@@ -75,7 +75,7 @@
 		usage($e->getMessage());
 	}
 
-	if (!$options["url"])
+	if (!isset($options["url"]))
 		usage("Url is required.");
 
 	if (sizeof($operands)!=1)
