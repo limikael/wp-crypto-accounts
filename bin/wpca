@@ -87,8 +87,11 @@
 	if (isset($options["key"]))
 		$wpca->setKey($options["key"]);
 
-	$wpca->setWalletId($options["walletId"]);
-	$wpca->setWalletPassword($options["walletPassword"]);
+	if (isset($options["walletId"]))
+		$wpca->setWalletId($options["walletId"]);
+
+	if (isset($options["walletPassword"]))
+		$wpca->setWalletPassword($options["walletPassword"]);
 
 	if (isset($options["askSecondPass"])) {
 		$pass=PasswordUtil::askPass("Secondary Blockchain Password");

@@ -108,8 +108,10 @@
 				case CurlRequest::JSON:
 					$decoded=json_decode($res,TRUE);
 
-					if ($decoded===NULL)
+					if ($decoded===NULL) {
+						echo $res;
 						throw new Exception("Unable to parse json");
+					}
 
 					$this->result=$decoded;
 					break;
