@@ -138,10 +138,12 @@
 			if (!$account)
 				return "<i>not logged in</i>";
 
-			$afterWithdraw=$_SERVER["PHP_SELF"];
+			//print_r($_SERVER);
 
-			if ($p["submit_attributes"])
-				$afterWithdraw.="?".$p["submit_attributes"];
+			$afterWithdraw=$_SERVER["REQUEST_URI"];
+
+			/*if ($p["submit_attributes"])
+				$afterWithdraw.="?".$p["submit_attributes"];*/
 
 			$template=new Template(__DIR__."/../template/withdraw.tpl.php");
 			$template->set("denomination",$p["denomination"]);
