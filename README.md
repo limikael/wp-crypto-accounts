@@ -1,5 +1,5 @@
-wpblockchainaccounts
-====================
+wp-crypto-accounts
+==================
 
 Allow Wordpress users to deposit and withdraw bitcoin.
 
