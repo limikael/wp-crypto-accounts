@@ -20,8 +20,8 @@ class BlockIoWallet extends AWallet {
 		if ($res["status"]!="success")
 			throw new Exception("Unable to contact block.io: ".$res["error_message"]);
 
-		foreach ($res["data"] as $url)
-			if ($url==$thisurl)
+		foreach ($res["data"] as $data)
+			if ($data["url"]==$thisurl)
 				return "Block.io WebHook operational.";
 
 		$curl=$this->createRequest("create_notification");
