@@ -3,6 +3,8 @@
 /*
 Plugin Name: Crypto Accounts
 Plugin URI: http://github.com/limikael/wp-crypto-accounts
+GitHub Plugin URI: http://github.com/limikael/wp-crypto-accounts
+Description: Let all your users have a bitcoin account.
 Version: 0.0.2
 */
 
