@@ -1,0 +1,3 @@
+[submodule "submodule/wprecord"]
+	path = submodule/wprecord
+	url = https://github.com/limikael/wprecord

@@ -1,0 +1,16 @@
+{
+    "name": "limikael/wprecord",
+    "description": "Active record implementation for WordPress",
+    "authors": [
+        {
+            "name": "Mikael Lindqvist",
+            "email": "li.mikael@gmail.com"
+        }
+    ],
+    "require-dev": {
+        "apigen/apigen": "^4.1"
+    },
+    "scripts": {
+        "doc": "scripts/doc.php"
+    }
+}
