@@ -2,18 +2,18 @@
 
 	namespace wpblockchainaccounts;
 
-	require_once __DIR__."/../../ext/smartrecord/SmartRecord.php";
+	require_once __DIR__."/../../ext/wprecord/WpRecord.php";
 	require_once __DIR__."/../utils/BitcoinUtil.php";
 	require_once __DIR__."/../plugin/CryptoAccountsPlugin.php";
 	require_once __DIR__."/Account.php";
 
-	use \SmartRecord;
+	use \WpRecord;
 	use \Exception;
 
 	/**
 	 * An account transaction.
 	 */
-	class Transaction extends SmartRecord {
+	class Transaction extends WpRecord {
 
 		const PROCESSING="processing";
 		const COMPLETE="complete";
