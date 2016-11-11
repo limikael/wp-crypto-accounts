@@ -97,9 +97,6 @@
 
 			$code=curl_getinfo($curl,CURLINFO_HTTP_CODE);
 
-			if ($code!=200)
-				throw new Exception("HTTP status: ".$code);
-
 			switch ($this->resultProcessing) {
 				case CurlRequest::NONE:
 					$this->result=$res;
@@ -116,6 +113,9 @@
 					$this->result=$decoded;
 					break;
 			}
+
+			if ($code!=200)
+				throw new Exception("HTTP status: ".$code.": ".$res);
 
 			return $this->result;
 		}

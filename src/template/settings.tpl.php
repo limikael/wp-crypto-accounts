@@ -5,7 +5,7 @@
 <?php } ?>
 
 <?php if (isset($error)) { ?>
-    <div class="updated settings-error notice is-dismissible">
+    <div class="error settings-error notice is-dismissible">
         <p><b><?php echo $error; ?></b></p>
     </div>
 <?php } ?>
