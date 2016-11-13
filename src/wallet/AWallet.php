@@ -12,4 +12,9 @@ abstract class AWallet {
 	 */
 	public function setup() {
 	}
+
+	/**
+	 * Create a new address.
+	 */
+	abstract function createNewAddress();
 }

@@ -38,6 +38,21 @@ class BlockIoWallet extends AWallet {
 	}
 
 	/**
+	 * Create a new address.
+	 */
+	public function createNewAddress() {
+		$curl=$this->createRequest("get_new_address");
+		$res=$curl->exec();
+
+		if ($res["status"]!="success") {
+			error_log(print_r($res,TRUE));
+			throw new Exception("Unable to contact block.io: ".$res["error_message"]);
+		}
+
+		return $res["data"]["address"];
+	}
+
+	/**
 	 * Create a request.
 	 */
 	private function createRequest($method) {
