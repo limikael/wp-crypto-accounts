@@ -33,6 +33,7 @@ class BlockIoControllerTest extends WP_UnitTestCase {
 				"address"=>"hello_world",
 				"txid"=>"123",
 				"balance_change"=>"0.05000000",
+				"confirmations"=>0,
 			)
 		);
 
@@ -53,7 +54,6 @@ class BlockIoControllerTest extends WP_UnitTestCase {
 	public function testTransactionCreated() {
 		$user_id = $this->factory->user->create();
 		$account=bca_user_account($user_id);
-
 		$address=$account->getDepositAddress();
 		$this->assertTrue(strlen($address)>4);
 
@@ -63,13 +63,29 @@ class BlockIoControllerTest extends WP_UnitTestCase {
 				"address"=>$address,
 				"txid"=>"12345678",
 				"balance_change"=>"0.05000000",
+				"confirmations"=>0,
 			)
 		);
 
 		BlockIoController::instance()->process($data);
-
 		$transaction=Transaction::findOneBy("transactionHash","12345678");
 		$this->assertEquals(0.05,$transaction->getAmount("btc"));
 		$this->assertEquals($transaction->getState(),Transaction::CONFIRMING);
+		$account=bca_user_account($user_id);
+		$this->assertEquals(0,$account->getBalance("btc"));
+
+		$data=array(
+			"type"=>"address",
+			"data"=>array(
+				"address"=>$address,
+				"txid"=>"12345678",
+				"balance_change"=>"0.05000000",
+				"confirmations"=>"3"
+			)
+		);
+
+		BlockIoController::instance()->process($data);
+		$account=bca_user_account($user_id);
+		$this->assertEquals(0.05,$account->getBalance("btc"));
 	}
 }

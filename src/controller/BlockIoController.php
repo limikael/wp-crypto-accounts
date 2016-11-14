@@ -47,5 +47,27 @@ class BlockIoController extends Singleton {
 			$transaction->amount=BitcoinUtil::toSatoshi("btc",$data["balance_change"]);
 			$transaction->save();
 		}
+
+		if ($transaction->getState()==Transaction::COMPLETE)
+			return;
+
+		$transaction->confirmations=intval($data["confirmations"]);
+
+		if ($transaction->confirmations>=get_option("blockchainaccounts_notifications")) {
+			$account=Account::findOneBy("id",$transaction->toAccountId);
+
+			if (!$account)
+				throw new Exception("unable to find account");
+
+			$account->balance+=$transaction->amount;
+			$account->save();
+
+			$transaction->toAccountBalance=$account->balance;
+			$transaction->timestamp=time();
+			$transaction->state=Transaction::COMPLETE;
+			$transaction->save();
+		}
+
+		$transaction->save();
 	}
 }
