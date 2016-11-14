@@ -57,8 +57,8 @@ class SettingsController extends Singleton {
 		$template=new Template(__DIR__."/../template/settings.tpl.php");
 
 		if (isset($_REQUEST["settings-updated"]) && $_REQUEST["settings-updated"]) {
-			if (CryptoAccountsPlugin::init()->isSetup()) {
-				$wallet=CryptoAccountsPlugin::init()->getWallet();
+			if (CryptoAccountsPlugin::instance()->isSetup()) {
+				$wallet=CryptoAccountsPlugin::instance()->getWallet();
 
 				try {
 					$info=$wallet->setup();

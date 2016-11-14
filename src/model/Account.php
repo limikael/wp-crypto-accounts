@@ -37,11 +37,11 @@
 		 * Create if it doesn't exist.
 		 */
 		public function getDepositAddress() {
-			if (!CryptoAccountsPlugin::init()->isSetup())
+			if (!CryptoAccountsPlugin::instance()->isSetup())
 				return NULL;
 
 			if (!$this->depositAddress) {
-				$wallet=CryptoAccountsPlugin::init()->getWallet();
+				$wallet=CryptoAccountsPlugin::instance()->getWallet();
 
 				$this->depositAddress=$wallet->createNewAddress();
 				$this->save();

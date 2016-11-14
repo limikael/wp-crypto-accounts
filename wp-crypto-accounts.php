@@ -22,11 +22,11 @@ use wpblockchainaccounts\SettingsController;
 use wpblockchainaccounts\Account;
 use wpblockchainaccounts\Transaction;
 
-CryptoAccountsPlugin::init();
-ShortcodeController::init();
+CryptoAccountsPlugin::instance();
+ShortcodeController::instance();
 
 if (is_admin()) {
-	SettingsController::init();
+	SettingsController::instance();
 }
 
 // Get a reference to a user account.
