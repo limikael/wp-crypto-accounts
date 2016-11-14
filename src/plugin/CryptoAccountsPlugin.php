@@ -5,8 +5,11 @@ namespace wpblockchainaccounts;
 require_once __DIR__."/../utils/Singleton.php";
 require_once __DIR__."/../wallet/BlockchainWallet.php";
 require_once __DIR__."/../wallet/BlockIoWallet.php";
+require_once __DIR__."/../wallet/MockWallet.php";
 require_once __DIR__."/../model/Account.php";
 require_once __DIR__."/../model/Transaction.php";
+
+use \Exception;
 
 /**
  * Main plugin class.
@@ -58,6 +61,10 @@ class CryptoAccountsPlugin extends Singleton {
 					$this->wallet=new BlockIoWallet(
 						get_option("blockchainaccounts_block_io_api_key")
 					);
+					break;
+
+				case "mock":
+					$this->wallet=new MockWallet();
 					break;
 
 				default:

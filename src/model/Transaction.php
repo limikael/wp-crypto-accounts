@@ -98,6 +98,13 @@
 		}
 
 		/**
+		 * Get amount.
+		 */
+		public function getAmount($denomination) {
+			return BitcoinUtil::fromSatoshi($denomination,$this->amount);
+		}
+
+		/**
 		 * Perform transaction.
 		 */
 		public function perform() {
@@ -122,6 +129,13 @@
 			$fromAccount->save();
 			$toAccount->save();
 			$this->save();
+		}
+
+		/**
+		 * Get state of the transaction.
+		 */
+		public function getState() {
+			return $this->state;
 		}
 
 		/**

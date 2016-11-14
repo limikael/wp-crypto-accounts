@@ -4,7 +4,7 @@ require_once __DIR__."/../../src/plugin/CryptoAccountsPlugin.php";
 
 use wpblockchainaccounts\CryptoAccountsPlugin;
 
-class MyAccountTest extends WP_UnitTestCase {
+class AccountTest extends WP_UnitTestCase {
 	public function testBasic() {
 		CryptoAccountsPlugin::instance()->activate();
 
