@@ -1,4 +1,11 @@
 <?php
 
-$postdata = file_get_contents("php://input");
-file_put_contents(__DIR__."/tests/log/post.".microtime(TRUE).".html", $postdata);
+require_once __DIR__."/src/utils/WpUtil.php";
+require_once __DIR__."/src/controller/BlockIoController.php";
+
+use wpblockchainaccounts\WpUtil;
+use wpblockchainaccounts\BlockIoController;
+
+WpUtil::bootstrap();
+
+BlockIoController::instance()->processPost();

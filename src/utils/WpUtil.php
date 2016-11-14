@@ -1,45 +1,48 @@
 <?php
 
-	namespace wpblockchainaccounts;
+namespace wpblockchainaccounts;
 
-	use \PDO;
+if (class_exists("wpblockchainaccounts\\WpUtil"))
+	return;
+
+/**
+ * Wordpress utils.
+ */
+class WpUtil {
 
 	/**
-	 * Wordpress utils.
+	 * Get base path.
 	 */
-	class WpUtil {
+	public static function getWpBasePath() {
+		if (php_sapi_name()=="cli")
+			$path=$_SERVER["PWD"];
 
-		/**
-		 * Bootstrap from inside a plugin.
-		 */
-		public static function getWpLoadPath() {
+		else
 			$path=$_SERVER['SCRIPT_FILENAME'];
 
-			for ($i=0; $i<4; $i++)
-				$path=dirname($path);
+		while (1) {
+			if (file_exists($path."/wp-load.php"))
+				return $path;
 
-			return $path."/wp-load.php";
-		}
+			$last=$path;
+			$path=dirname($path);
 
-		/**
-		 * Create a PDO object that is compatible with the current
-		 * wordpress install.
-		 */
-		public static function getCompatiblePdo() {
-			static $pdo;
-
-			if (!$pdo)
-				$pdo=new PDO("mysql:host=".DB_HOST.";dbname=".DB_NAME,DB_USER,DB_PASSWORD);
-
-			return $pdo;
-		}
-
-		/**
-		 * Get table prefix.
-		 */
-		public static function getTablePrefix() {
-			global $wpdb;
-
-			return $wpdb->prefix;
+			if ($last==$path)
+				throw new \Exception("Not inside a wordpress install.");
 		}
 	}
+
+	/**
+	 * Get path to WordPress bootstrap file.
+	 */
+	public static function getWpLoadPath() {
+		return WpUtil::getWpBasePath()."/wp-load.php";
+	}
+
+	/**
+	 * Bootstrap WordPress.
+	 */
+	public function bootstrap() {
+		require_once WpUtil::getWpLoadPath();
+	}
+}

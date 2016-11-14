@@ -70,4 +70,16 @@ class BlockIoController extends Singleton {
 
 		$transaction->save();
 	}
+
+	/**
+	 * Process posted data.
+	 */
+	public function processPost(){
+		$postdata=file_get_contents("php://input");
+		$payload=json_decode($postdata,TRUE);
+		if (!$payload)
+			throw new Exception("Unable to parse json.");
+
+		$this->process($payload);
+	}
 }
