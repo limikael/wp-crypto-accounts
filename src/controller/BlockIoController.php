@@ -53,12 +53,11 @@ class BlockIoController extends Singleton {
 
 		$transaction->confirmations=intval($data["confirmations"]);
 
+		$account=$transaction->getToAccount();
+		if (!$account)
+			throw new Exception("unable to find account");
+
 		if ($transaction->confirmations>=get_option("blockchainaccounts_notifications")) {
-			$account=Account::findOneBy("id",$transaction->toAccountId);
-
-			if (!$account)
-				throw new Exception("unable to find account");
-
 			$account->balance+=$transaction->amount;
 			$account->save();
 
@@ -69,6 +68,7 @@ class BlockIoController extends Singleton {
 		}
 
 		$transaction->save();
+		$account->getPubSub()->publish();
 	}
 
 	/**

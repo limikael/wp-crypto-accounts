@@ -29,6 +29,31 @@ class Account extends WpRecord {
 	}
 
 	/**
+	 * Get transactions in confirming state.
+	 */
+	public function getConfirmingTransactions() {
+		$transactions=Transaction::findAllBy(array(
+			"toAccountId"=>$this->id,
+			"state"=>Transaction::CONFIRMING
+		));
+
+		return $transactions;
+	}
+
+	/**
+	 * Get amount in confirming state.
+	 */
+	public function getConfirmingAmount($denomination) {
+		$amount=0;
+		$transactions=$this->getConfirmingTransactions();
+
+		foreach ($transactions as $transaction)
+			$amount+=$transaction->getAmount($denomination);
+
+		return $amount;
+	}
+
+	/**
 	 * Get balance.
 	 */
 	public function getBalance($denomination) {

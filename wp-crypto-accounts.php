@@ -14,6 +14,7 @@ require_once __DIR__."/src/controller/SettingsController.php";
 require_once __DIR__."/src/utils/WpUtil.php";
 require_once __DIR__."/src/model/Account.php";
 require_once __DIR__."/src/model/Transaction.php";
+require_once __DIR__."/src/controller/AccountController.php";
 
 use wpblockchainaccounts\WpUtil;
 use wpblockchainaccounts\CryptoAccountsPlugin;
@@ -21,9 +22,11 @@ use wpblockchainaccounts\ShortcodeController;
 use wpblockchainaccounts\SettingsController;
 use wpblockchainaccounts\Account;
 use wpblockchainaccounts\Transaction;
+use wpblockchainaccounts\AccountController;
 
 CryptoAccountsPlugin::instance();
 ShortcodeController::instance();
+AccountController::instance();
 
 if (is_admin()) {
 	SettingsController::instance();

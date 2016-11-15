@@ -28,6 +28,13 @@ class PubSub {
 	}
 
 	/**
+	 * Set timeout.
+	 */
+	public function setTimeout($timeout) {
+		$this->timeout=$timeout;
+	}
+
+	/**
 	 * Notify listening parties.
 	 */
 	public function publish($message=TRUE) {
@@ -74,6 +81,17 @@ class PubSub {
 		$res=socket_listen($this->socket);
 		if (!$res)
 			throw new Exception("Can't listen to socket.");
+	}
+
+	/**
+	 * Close.
+	 */
+	public function close() {
+		if ($this->socket) {
+			socket_close($this->socket);
+			@unlink($this->fileName);
+			$this->socket=NULL;
+		}
 	}
 
 	/**

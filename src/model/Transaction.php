@@ -15,6 +15,9 @@
 	 */
 	class Transaction extends WpRecord {
 
+		private $toAccount;
+		private $fromAccount;
+
 		const PROCESSING="processing";
 		const COMPLETE="complete";
 		const CONFIRMING="confirming";

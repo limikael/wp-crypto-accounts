@@ -12,11 +12,14 @@ require_once __DIR__."/../model/Account.php";
  */
 class ShortcodeController extends Singleton {
 
+	private $balanceScriptPrinted;
+
 	/**
 	 * Constructor.
 	 */
 	public function __construct() {
 		add_shortcode("bca_balance", array($this, "bca_balance"));
+		add_shortcode("bca-balance", array($this, "bca_balance"));
 		add_shortcode("bca_deposit", array($this, "bca_deposit"));
 		add_shortcode("bca_history", array($this, "bca_history"));
 		add_shortcode("bca_withdraw", array($this, "bca_withdraw"));
@@ -49,7 +52,35 @@ class ShortcodeController extends Singleton {
 		if (!$account)
 			return "<i>not logged in</i>";
 
-		return $account->getBalance($p["denomination"])." ".$p["denomination"];
+		if (!$this->balanceScriptPrinted) {
+			$this->balanceScriptPrinted=TRUE;
+			wp_enqueue_script("cryptoaccount",
+				get_site_url().
+				"/wp-content/plugins/wp-crypto-accounts/js/wp-crypto-accounts.js"
+			);
+
+			echo "<script>\n";
+			echo "var ajaxurl='".admin_url('admin-ajax.php')."'\n";
+			echo "var BCA_ACCOUNT_INFO={\n";
+			echo "'balance':".$account->getBalance("satoshi").",";
+			echo "'confirming':".$account->getConfirmingAmount("satoshi");
+			echo "}\n";
+			echo "</script>\n";
+		}
+
+		$s="";
+		$s.="<span class='bca-balance' denomination='".$p["denomination"]."'>";
+		$s.=$account->getBalance($p["denomination"])." ".$p["denomination"]." ";
+		$s.="</span>";
+
+		$s.="<span class='bca-confirming' denomination='".$p["denomination"]."'>";
+		$a=$account->getConfirmingAmount($p["denomination"]);
+		if ($a)
+			$s.=" (+".$a." ".$p["denomination"].")";
+
+		$s.="</span>";
+
+		return $s;
 	}
 
 	/**
