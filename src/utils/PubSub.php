@@ -1,5 +1,7 @@
 <?php
 
+namespace wpblockchainaccounts;
+
 /**
  * A channel where a sending party can notify
  * a listening party about events.
@@ -52,7 +54,10 @@ class PubSub {
 
 		$this->socket=socket_create(AF_UNIX,SOCK_STREAM,0);
 
-		$res=socket_bind($this->socket,$this->fileName);
+		$oldcwd=getcwd();
+		chdir(dirname($this->fileName));
+		$res=socket_bind($this->socket,basename($this->fileName));
+		chdir($oldcwd);
 		if (!$res)
 			throw new Exception("Can't bind socket.");
 

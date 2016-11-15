@@ -80,6 +80,7 @@ class CryptoAccountsPlugin extends Singleton {
 	 */
 	public function activate() {
 		Account::install();
+		Account::ensureNotificationsDirExists();
 		Transaction::install();
 
 		foreach ($this->optionDefaults as $option=>$default)
