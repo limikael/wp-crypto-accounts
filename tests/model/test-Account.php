@@ -36,11 +36,12 @@ class AccountTest extends WP_UnitTestCase {
 		$user_id = $this->factory->user->create();
 		$account=bca_user_account($user_id);
 
-		$fn=Account::getNotificationsDir()."/".$account->getPubSubFileName();
-		$cmd="/usr/bin/php ".__DIR__."/notify.php ".$fn." > /dev/null 2>&1 &";
+		$fn=$account->getPubSub()->getFileName();
+		$cmd="/usr/bin/php ".__DIR__."/notify.php ".$fn." hello > /dev/null 2>&1 &";
 		system($cmd,$res);
 
-		$account->waitChange();
+		$data=$account->getPubSub()->wait();
+		$this->assertEquals($data,"hello");
 
 		if (time()-$t>10)
 			throw new Exception("That took too long");

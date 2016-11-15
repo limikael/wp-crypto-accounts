@@ -17,8 +17,14 @@ class PubSub {
 	 */
 	public function __construct($fn) {
 		$this->fileName=$fn;
-
 		$this->timeout=30;
+	}
+
+	/**
+	 * Get filename.
+	 */
+	public function getFileName() {
+		return $this->fileName;
 	}
 
 	/**
@@ -33,7 +39,11 @@ class PubSub {
 			return;
 
 		$socket=socket_create(AF_UNIX,SOCK_STREAM,0);
-		$res=socket_connect($socket,$this->fileName);
+
+		$oldcwd=getcwd();
+		chdir(dirname($this->fileName));
+		$res=socket_connect($socket,basename($this->fileName));
+		chdir($oldcwd);
 		if (!$res)
 			throw new Exception("Can't connect.");
 

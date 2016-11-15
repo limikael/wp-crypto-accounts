@@ -16,6 +16,8 @@ use \Exception;
  */
 class Account extends WpRecord {
 
+	private $pubSub;
+
 	/**
 	 * Constructor.
 	 */
@@ -156,9 +158,6 @@ class Account extends WpRecord {
 	public static function getNotificationsDir() {
 		$upload_dir=wp_get_upload_dir();
 		$dir=$upload_dir["basedir"]."/crypto-accounts-notifications/";
-
-		//return sys_get_temp_dir()."/wp-ca-n/";
-
 		return $dir;
 	}
 
@@ -174,34 +173,14 @@ class Account extends WpRecord {
 	/**
 	 * Get pub sub.
 	 */
-	public function getPubSubFileName() {
-		return $this->entity_type.":".$this->entity_id;
-	}
+	public function getPubSub() {
+		if (!$this->pubSub) {
+			Account::ensureNotificationsDirExists();
+			$dir=Account::getNotificationsDir();
+			$fn=$this->entity_type.":".$this->entity_id;
+			$this->pubSub=new PubSub($dir."/".$fn);
+		}
 
-	/**
-	 * Notify listeners there is a change on the account.
-	 */
-	public function notifyChange() {
-		Account::ensureNotificationsDirExists();
-
-		$oldcwd=getcwd();
-		chdir(Account::getNotificationsDir());
-		$pubSub=new PubSub($this->getPubSubFileName());
-		$pubSub->publish();
-		chdir($oldcwd);
-	}
-
-	/**
-	 * Wait for change.
-	 */
-	public function waitChange() {
-		Account::ensureNotificationsDirExists();
-
-		$oldcwd=getcwd();
-		chdir(Account::getNotificationsDir());
-		$fn=$this->entity_type.":".$this->entity_id;
-		$pubSub=new PubSub(Account::getNotificationsDir()."/".$fn);
-		$pubSub->wait();
-		chdir($oldcwd);
+		return $this->pubSub;
 	}
 }
