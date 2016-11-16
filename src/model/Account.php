@@ -143,7 +143,20 @@ class Account extends WpRecord {
 	}
 
 	/**
+	 * Get related user, if this is a user account.
+	 */
+	public function getUser() {
+		if ($this->entity_type!="user")
+			throw new Exception("This is not a user account");
+
+		return get_userdata($this->entity_id);
+	}
+
+	/**
 	 * Withdraw funds.
+	 * If withdraw processing is manual, the transaction will
+	 * be stored as scheduled. If withdraw processing is automatic
+	 * the transaction will be performed immediately.
 	 */
 	public function withdraw($denomination, $address, $amount) {
 		if ($amount<0 || $amount>$this->getBalance($denomination))
@@ -164,6 +177,11 @@ class Account extends WpRecord {
 		$t->save();
 
 		$this->save();
+
+		if (get_option("blockchainaccounts_withdraw_processing")=="auto")
+			$t->performWithdraw();
+
+		return $t;
 	}
 
 	/**

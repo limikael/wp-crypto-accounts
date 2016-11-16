@@ -9,6 +9,8 @@ use \Exception;
 
 class BlockIoWallet extends AWallet {
 
+	private $password;
+
 	/**
 	 * Setup.
 	 */
@@ -53,6 +55,27 @@ class BlockIoWallet extends AWallet {
 	}
 
 	/**
+	 * Send to address.
+	 */
+	public function send($address, $amount) {
+		if (!$this->password)
+			throw new Exception("Password for block.io not set");
+
+		$curl=$this->createRequest("withdraw");
+		$curl->setParam("amounts",BitcoinUtil::fromSatoshi("btc",$amount));
+		$curl->setParam("to_addresses",$address);
+		$curl->setParam("pin",$this->password);
+		$res=$curl->exec();
+
+		if ($res["status"]!="success") {
+			error_log(print_r($res,TRUE));
+			throw new Exception("Unable to contact block.io: ".$res["error_message"]);
+		}
+
+		error_log(json_encode($res,TRUE));
+	}
+
+	/**
 	 * Create a request.
 	 */
 	private function createRequest($method) {
@@ -62,5 +85,19 @@ class BlockIoWallet extends AWallet {
 		$curl->setResultProcessing("json");
 
 		return $curl;
+	}
+
+	/**
+	 * Set password.
+	 */
+	public function setPassword($password) {
+		$this->password=$password;
+	}
+
+	/**
+	 * Get label for the password.
+	 */
+	public function getPasswordLabel() {
+		return "Block.io Password";
 	}
 }

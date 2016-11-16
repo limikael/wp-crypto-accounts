@@ -47,7 +47,9 @@ class SettingsController extends Singleton {
 		);
 
 		register_setting("blockchainaccounts","blockchainaccounts_block_io_api_key");
+		register_setting("blockchainaccounts","blockchainaccounts_block_io_password");
 		register_setting("blockchainaccounts","blockchainaccounts_wallet_type");
+		register_setting("blockchainaccounts","blockchainaccounts_withdraw_processing");
 	}
 
 	/**
@@ -72,6 +74,55 @@ class SettingsController extends Singleton {
 			}
 		}
 
+		$tab="setup";
+		if (isset($_REQUEST["tab"]))
+			$tab=$_REQUEST["tab"];
+
+		if ($tab=="withdraw" && $_REQUEST["transactionIds"]) {
+			$wallet=CryptoAccountsPlugin::instance()->getWallet();
+			$wallet->setPassword($_REQUEST["password"]);
+
+			try {
+				foreach ($_REQUEST["transactionIds"] as $transactionId) {
+					$transaction=Transaction::findOne($transactionId);
+					$transaction->performWithdraw();
+				}
+
+				$template->set("message","Transactions completed.");
+			}
+
+			catch (Exception $e) {
+				$template->set("error",$e->getMessage());
+			}
+
+		}
+
+		if ($tab=="withdraw") {
+			$denomination="btc";
+			$totalAmount=0;
+			$transactionViews=array();
+			$transactions=Transaction::findAllBy("state",Transaction::SCHEDULED);
+			foreach ($transactions as $transaction) {
+				$user=$transaction->getFromAccount()->getUser();
+
+				$transactionView=array(
+					"id"=>$transaction->id,
+					"when"=>human_time_diff(time(),$transaction->timestamp)." ago",
+					"user"=>$user->display_name." (".$user->user_email.")",
+					"amount"=>$transaction->getAmount($denomination)." ".$denomination,
+				);
+
+				$transactionViews[]=$transactionView;
+				$totalAmount+=$transaction->getAmount($denomination);
+			}
+
+			$wallet=CryptoAccountsPlugin::instance()->getWallet();
+			$template->set("passwordLabel",$wallet->getPasswordLabel());
+			$template->set("transactions",$transactionViews);
+		}
+
+		$template->set("tab",$tab);
+		$template->set("totalAmount",$totalAmount." ".$denomination);
 		$template->show();
 	}
 }

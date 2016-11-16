@@ -22,10 +22,30 @@
 		if (!$_REQUEST["amount"])
 			throw new Exception("Please enter the amount to withdraw.");
 
-		$account->withdraw($_REQUEST["denomination"],$_REQUEST["address"],$_REQUEST["amount"]);
-		$_SESSION["bca_withdraw_success"]=
-			"Your withdrawal has been initiated.<br/>".
-			"Please see your account history for progress.";
+		$address=$_REQUEST["address"];
+		$amount=$_REQUEST["amount"];
+
+		$_REQUEST["address"]="";
+		$_REQUEST["amount"]="";
+
+		$t=$account->withdraw($_REQUEST["denomination"],$address,$amount);
+
+		switch ($t->getState()) {
+			case Transaction::COMPLETE:
+				$_SESSION["bca_withdraw_success"]=
+					"The withdrawal has been processed.";
+				break;
+
+			case Transaction::SCHEDULED:
+				$_SESSION["bca_withdraw_success"]=
+					"Your withdrawal has been initiated.<br/>".
+					"Please see your account history for progress.";
+				break;
+
+			default:
+				throw new Exception("Unknown transaction state.");
+				break;
+		}
 	}
 
 	catch (Exception $e) {

@@ -1,12 +1,20 @@
 jQuery(function($) {
 	function updateCryptoAccountSettings() {
+		var withdrawProcessing = $("#blockchainaccounts_withdraw_processing").val();
 		switch ($("#blockchainaccounts_wallet_type").val()) {
 			case "block_io":
 				$("#blockchainaccounts_block_io_api_key").show();
+
+				if (withdrawProcessing == "auto")
+					$("#blockchainaccounts_block_io_password").show();
+
+				else
+					$("#blockchainaccounts_block_io_password").hide();
 				break;
 
 			default:
 				$("#blockchainaccounts_block_io_api_key").hide();
+				$("#blockchainaccounts_block_io_password").hide();
 				break;
 		}
 	}
@@ -16,6 +24,7 @@ jQuery(function($) {
 		updateCryptoAccountSettings();
 
 		$("#blockchainaccounts_wallet_type").change(updateCryptoAccountSettings);
+		$("#blockchainaccounts_withdraw_processing").change(updateCryptoAccountSettings);
 	});
 
 	// Balance update notifications.

@@ -35,6 +35,7 @@ class CryptoAccountsPlugin extends Singleton {
 			"blockchainaccounts_notifications"=>2,
 			"blockchainaccounts_lastcheck"=>NULL,
 			"blockchainaccounts_wallet_type"=>NULL,
+			"blockchainaccounts_withdraw_processing"=>"manual",
 		);
 
 		/*error_reporting(E_ALL);
@@ -61,6 +62,10 @@ class CryptoAccountsPlugin extends Singleton {
 					$this->wallet=new BlockIoWallet(
 						get_option("blockchainaccounts_block_io_api_key")
 					);
+
+					if (get_option("blockchainaccounts_withdraw_processing")=="auto")
+						$this->wallet->setPassword(get_option("blockchainaccounts_block_io_password"));
+
 					break;
 
 				case "mock":

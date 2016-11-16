@@ -18,10 +18,17 @@
 		private $toAccount;
 		private $fromAccount;
 
+		// Initial state. Amount has not left the accounts.
 		const PROCESSING="processing";
-		const COMPLETE="complete";
+
+		// An deposit transaction that doesn't yet have enough confirmations.
 		const CONFIRMING="confirming";
+
+		// A scheduled withdrawal transaction. The amount as already deducted.
 		const SCHEDULED="scheduled";
+
+		// Complete.
+		const COMPLETE="complete";
 
 		/**
 		 * Construct.
@@ -131,6 +138,23 @@
 
 			$fromAccount->save();
 			$toAccount->save();
+			$this->save();
+		}
+
+		/**
+		 * Perform withdrawal.
+		 */
+		public function performWithdraw() {
+			if ($this->state!=Transaction::SCHEDULED)
+				throw new Exception("Unexpected transaction state: ".$this->state);
+
+			if ($this->amount<0)
+				throw new Exception("Negative amount for transaction.");
+
+			$wallet=CryptoAccountsPlugin::instance()->getWallet();
+			$this->transactionHash=$wallet->send($this->withdrawAddress,$this->amount);
+
+			$this->state=Transaction::COMPLETE;
 			$this->save();
 		}
 
