@@ -11,7 +11,7 @@ use \Exception;
 class PubSub {
 
 	private $fileName;
-	private $socket;
+	private $subscribeFile;
 	private $timeout;
 
 	/**
@@ -37,62 +37,55 @@ class PubSub {
 	}
 
 	/**
+	 * Ensure the fifo is created.
+	 */
+	private function ensureFifo() {
+		if (file_exists($this->fileName)) {
+			$type=filetype($this->fileName);
+			if ($type!="fifo")
+				throw new Exception("File already exists, but it is not a fifo");
+
+			return;
+		}
+
+		if (function_exists("posix_mkfifo")) {
+			if (!posix_mkfifo($this->fileName, 0644))
+				throw new Exception("Unable to create fifo using posix_mkfifo");
+
+			return;
+		}
+
+		exec("/usr/bin/mkfifo ".escapeshellarg($this->fileName),$ret,$err);
+		if ($err)
+			throw new Exception("Unable to create fifo using exec(mkfifo)");
+	}
+
+	/**
 	 * Notify listening parties.
 	 */
 	public function publish($message=TRUE) {
-		if (!$message)
-			throw new Exception("Can't send falsey data.");
-
-		// If no one is listening, just return.
-		if (!file_exists($this->fileName))
-			return;
-
-		$socket=socket_create(AF_UNIX,SOCK_STREAM,0);
-
-		$oldcwd=getcwd();
-		chdir(dirname($this->fileName));
-		$res=socket_connect($socket,basename($this->fileName));
-		chdir($oldcwd);
-		if (!$res)
-			throw new Exception("Can't connect.");
-
-		$encoded=json_encode($message);
-		socket_write($socket,$encoded,strlen($encoded));
-		socket_close($socket);
+		$this->ensureFifo();
+		$f=fopen($this->fileName,"r+");
+		stream_set_blocking($f, false);
+		$written=fputs($f,strval($message));
+		fclose($f);
 	}
 
 	/**
 	 * Wait for a notification.
 	 */
 	public function subscribe() {
-		if (file_exists($this->fileName))
-			@unlink($this->fileName);
-
-		if (file_exists($this->fileName))
-			throw new Exception("There is already a file, but couldn't remove it.");
-
-		$this->socket=socket_create(AF_UNIX,SOCK_STREAM,0);
-
-		$oldcwd=getcwd();
-		chdir(dirname($this->fileName));
-		$res=socket_bind($this->socket,basename($this->fileName));
-		chdir($oldcwd);
-		if (!$res)
-			throw new Exception("Can't bind socket.");
-
-		$res=socket_listen($this->socket);
-		if (!$res)
-			throw new Exception("Can't listen to socket.");
+		$this->ensureFifo();
+		$this->subscribeFile=fopen($this->fileName,"rn");
 	}
 
 	/**
 	 * Close.
 	 */
 	public function close() {
-		if ($this->socket) {
-			socket_close($this->socket);
-			@unlink($this->fileName);
-			$this->socket=NULL;
+		if ($this->subscribeFile) {
+			fclose($this->subscribeFile);
+			$this->subscribeFile=NULL;
 		}
 	}
 
@@ -100,33 +93,20 @@ class PubSub {
 	 * Wait one tick.
 	 */
 	public function wait() {
-		if (!$this->socket)
+		if (!$this->subscribeFile)
 			$this->subscribe();
 
-		$r=array($this->socket);
+		$r=array($this->subscribeFile);
 		$w=array();
 		$x=array();
 
-		$sel=socket_select($r,$w,$x,$this->timeout);
+		$sel=stream_select($r,$w,$x,$this->timeout);
 		if ($sel===FALSE)
-			throw new Exception("Can't select on socket.");
+			throw new Exception("Can't select on file.");
 
-		if ($sel) {
-			$connection=socket_accept($this->socket);
-			$data=socket_read($connection,65536);
-			if ($data===FALSE)
-				throw new Exception("Can't read from connection.");
+		$s=fgets($this->subscribeFile);
+		$this->close();
 
-			$decoded=json_decode($data,TRUE);
-			socket_close($connection);
-			socket_close($this->socket);
-			@unlink($this->fileName);
-
-			return $decoded;
-		}
-
-		socket_close($this->socket);
-		@unlink($this->fileName);
-		return FALSE;
+		return $s;
 	}
 }
