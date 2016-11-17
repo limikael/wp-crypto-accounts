@@ -2,6 +2,8 @@
 
 namespace wpblockchainaccounts;
 
+use \Exception;
+
 /**
  * A channel where a sending party can notify
  * a listening party about events.
