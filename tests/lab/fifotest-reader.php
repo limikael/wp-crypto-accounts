@@ -2,8 +2,12 @@
 
 error_reporting(E_ALL); ini_set('display_errors', 1);
 
-if (!file_exists(__DIR__."/test.fifo"))
-	posix_mkfifo(__DIR__."/test.fifo", 0644);
+if (!file_exists(__DIR__."/test.fifo")) {
+	exec("/usr/bin/mkfifo ".__DIR__."/test.fifo",$ret,$err);
+	if ($err)
+		throw new Exception("Unable to crate fifo");
+	//posix_mkfifo(__DIR__."/test.fifo", 0644);
+}
 
 echo "made..\n";
 
