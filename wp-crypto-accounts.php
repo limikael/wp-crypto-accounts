@@ -59,3 +59,10 @@ if (!function_exists("bca_make_transaction")) {
 		return $t->id;
 	}
 }
+
+// Get available denominations
+if (!function_exists("bca_denominations")) {
+	function bca_denominations() {
+		return array("bits");
+	}
+}
