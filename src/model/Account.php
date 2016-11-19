@@ -29,6 +29,16 @@ class Account extends WpRecord {
 	}
 
 	/**
+	 * Equals.
+	 */
+	public function equals($account) {
+		if (!$this->id || !$account->id)
+			throw new Exception("Can't compare accounts without id.");
+
+		return $this->id==$account->id;
+	}
+
+	/**
 	 * Get transactions in confirming state.
 	 */
 	public function getConfirmingTransactions() {

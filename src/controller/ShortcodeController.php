@@ -45,7 +45,7 @@ class ShortcodeController extends Singleton {
 	 */
 	public function bca_balance($p) {
 		if (!isset($p["denomination"]))
-			$p["denomination"]="bits";
+			$p["denomination"]="btc";
 
 		$account=Account::getCurrentUserAccount();
 

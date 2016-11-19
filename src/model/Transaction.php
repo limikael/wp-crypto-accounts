@@ -45,6 +45,9 @@
 			if (!$this->fromAccount)
 				$this->fromAccount=Account::findOne($this->fromAccountId);
 
+			if (!$this->fromAccount)
+				throw new Exception("No source acount for transaction!");
+
 			return $this->fromAccount;
 		}
 
@@ -54,6 +57,9 @@
 		public function getToAccount() {
 			if (!$this->toAccount)
 				$this->toAccount=Account::findOne($this->toAccountId);
+
+			if (!$this->toAccount)
+				throw new Exception("No target account for transaction!");
 
 			return $this->toAccount;
 		}
@@ -104,6 +110,9 @@
 		 * Set amount.
 		 */
 		public function setAmount($denomination, $amount) {
+			if ($amount<=0)
+				throw new Exception("Negative or zero amount for transaction: ".$amount." ".$denomination);
+
 			$this->amount=BitcoinUtil::toSatoshi($denomination,$amount);
 		}
 
@@ -126,6 +135,9 @@
 
 			$toAccount=$this->getToAccount();
 			$fromAccount=$this->getFromAccount();
+
+			if ($fromAccount->equals($toAccount))
+				throw new Exception("Source and destination is the same account.");
 
 			if ($fromAccount->balance<$this->amount)
 				throw new Exception("Insufficient funds on account.");

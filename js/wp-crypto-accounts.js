@@ -56,6 +56,30 @@ jQuery(function($) {
 			}
 		}
 
+		function toSatoshi(denomination, amount) {
+			switch (denomination) {
+				case "satoshi":
+					return amount;
+					break;
+
+				case "bits":
+					return amount * 100;
+					break;
+
+				case "mbtc":
+					return amount * 100000;
+					break;
+
+				case "btc":
+					return amount * 100000000;
+					break;
+
+				default:
+					throw new Error("Unknown denomination: " + denomination);
+					return;
+			}
+		}
+
 		function onBalanceUpdateSuccess(data) {
 			console.log("Got balance update");
 			$('.bca-balance').each(function(el) {
@@ -105,5 +129,15 @@ jQuery(function($) {
 		}
 
 		setTimeout(requestBalanceUpdate, 1000);
+
+		$(document).on("bcaBalance", function(e) {
+			var satoshi = toSatoshi(e.currency, e.balance);
+			$('.bca-balance').each(function(el) {
+				$(this).text(
+					fromSatoshi($(this).attr("denomination"), satoshi) + " " +
+					$(this).attr("denomination")
+				);
+			});
+		});
 	});
 });

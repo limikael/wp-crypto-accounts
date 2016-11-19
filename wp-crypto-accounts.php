@@ -48,7 +48,7 @@ if (!function_exists("bca_entity_account")) {
 
 // Make transaction.
 if (!function_exists("bca_make_transaction")) {
-	function bca_make_transaction($denomination, $fromAccount, $toAccount, $amount, $message=NULL) {
+	function bca_make_transaction($denomination, $fromAccount, $toAccount, $amount, $message="Transaction") {
 		$t=new Transaction();
 		$t->setFromAccount($fromAccount);
 		$t->setToAccount($toAccount);
@@ -63,6 +63,6 @@ if (!function_exists("bca_make_transaction")) {
 // Get available denominations
 if (!function_exists("bca_denominations")) {
 	function bca_denominations() {
-		return array("bits");
+		return array("bits","mbtc","btc");
 	}
 }
