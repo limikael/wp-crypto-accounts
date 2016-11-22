@@ -74,14 +74,37 @@ class BlockIoController extends Singleton {
 	}
 
 	/**
+	 * Handle exception.
+	 */
+	public function handleException($e) {
+		http_response_code(500);
+
+		echo json_encode(array(
+			"error"=>TRUE,
+			"message"=>$e->getMessage()
+		),JSON_PRETTY_PRINT);
+
+		exit;
+	}
+
+	/**
 	 * Process posted data.
 	 */
 	public function processPost(){
+		set_exception_handler(array($this,"handleException"));
+
+		if (!$_REQUEST["key"] ||
+				$_REQUEST["key"]!=get_option("blockchainaccounts_notification_key"))
+			throw new Exception("Wrong notification key.");
+
 		$postdata=file_get_contents("php://input");
 		$payload=json_decode($postdata,TRUE);
 		if (!$payload)
 			throw new Exception("Unable to parse json.");
 
 		$this->process($payload);
+		echo json_encode(array(
+			"success"=>TRUE
+		),JSON_PRETTY_PRINT);
 	}
 }

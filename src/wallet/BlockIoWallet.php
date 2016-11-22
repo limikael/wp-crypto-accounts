@@ -15,7 +15,9 @@ class BlockIoWallet extends AWallet {
 	 * Setup.
 	 */
 	public function setup() {
-		$thisurl=site_url()."/wp-content/plugins/wp-crypto-accounts/notification-block-io.php";
+		$thisurl=
+			site_url()."/wp-content/plugins/wp-crypto-accounts/notification-block-io.php?".
+			"key=".get_option("blockchainaccounts_notification_key");
 
 		$curl=$this->createRequest("get_notifications");
 		$res=$curl->exec();

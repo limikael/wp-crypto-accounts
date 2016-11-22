@@ -30,7 +30,7 @@ class AccountController extends Singleton {
 			"message"=>$e->getMessage()
 		),JSON_PRETTY_PRINT);
 
-		return;
+		exit;
 	}
 
 	/**
