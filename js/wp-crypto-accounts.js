@@ -29,7 +29,7 @@ jQuery(function($) {
 
 	// Balance update notifications.
 	$(document).ready(function() {
-		if (!$(".bca-balance").size())
+		if (!$(".bca-balance").size() && !$(".bca-confirming-balance"))
 			return;
 
 		function fromSatoshi(denomination, amount) {
@@ -89,6 +89,13 @@ jQuery(function($) {
 				);
 			});
 
+			$('.bca-confirming-balance').each(function(el) {
+				$(this).text(
+					fromSatoshi($(this).attr("denomination"), data.confirmingBalance) + " " +
+					$(this).attr("denomination")
+				);
+			});
+
 			$('.bca-confirming').each(function(el) {
 				if (data.confirming) {
 					$(this).text(
@@ -116,7 +123,8 @@ jQuery(function($) {
 			var data = {
 				action: "bca_balance_update",
 				balance: BCA_ACCOUNT_INFO.balance,
-				confirming: BCA_ACCOUNT_INFO.confirming
+				confirming: BCA_ACCOUNT_INFO.confirming,
+				confirmingBalance: BCA_ACCOUNT_INFO.confirmingBalance
 			};
 
 			$.ajax({
@@ -132,7 +140,7 @@ jQuery(function($) {
 
 		$(document).on("bcaBalance", function(e) {
 			var satoshi = toSatoshi(e.currency, e.balance);
-			$('.bca-balance').each(function(el) {
+			$('.bca-confirming-balance').each(function(el) {
 				$(this).text(
 					fromSatoshi($(this).attr("denomination"), satoshi) + " " +
 					$(this).attr("denomination")

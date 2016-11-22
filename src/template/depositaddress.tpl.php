@@ -3,7 +3,6 @@
 <div id='blockchainaccounts-deposit-qrcode'></div>
 <script>
 	jQuery(function($) {
-		console.log("hello");
 		$('#blockchainaccounts-deposit-qrcode').qrcode({
 		    "size": 300,
    			"color": "#3a3",

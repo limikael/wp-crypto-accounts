@@ -71,6 +71,15 @@ class Account extends WpRecord {
 	}
 
 	/**
+	 * Get balance in confirmation.
+	 */
+	public function getConfirmingBalance($denomination) {
+		return
+			$this->getBalance($denomination)+
+			$this->getConfirmingAmount($denomination);
+	}
+
+	/**
 	 * Get deposit address.
 	 * Create if it doesn't exist.
 	 */
@@ -163,6 +172,13 @@ class Account extends WpRecord {
 	}
 
 	/**
+	 * Are there any unconfirmed transactions?
+	 */
+	public function hasConfirming() {
+		return $this->getConfirmingAmount("btc")>0;
+	}
+
+	/**
 	 * Withdraw funds.
 	 * If withdraw processing is manual, the transaction will
 	 * be stored as scheduled. If withdraw processing is automatic
@@ -171,6 +187,9 @@ class Account extends WpRecord {
 	public function withdraw($denomination, $address, $amount) {
 		if ($amount<0 || $amount>$this->getBalance($denomination))
 			throw new Exception("Insufficient funds on account.");
+
+		if ($this->hasConfirming())
+			throw new Exception("There are unconfirmed transactions for the account.");
 
 		if ($this->entity_type!="user")
 			throw new Exception("Can only withdraw from user accounts.");

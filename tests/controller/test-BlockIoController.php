@@ -73,6 +73,7 @@ class BlockIoControllerTest extends WP_UnitTestCase {
 		$this->assertEquals($transaction->getState(),Transaction::CONFIRMING);
 		$account=bca_user_account($user_id);
 		$this->assertEquals(0,$account->getBalance("btc"));
+		$this->assertEquals(0.05,$account->getConfirmingBalance("btc"));
 
 		$data=array(
 			"type"=>"address",

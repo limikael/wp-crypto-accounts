@@ -46,6 +46,8 @@ class BlockIoController extends Singleton {
 			$transaction->state=Transaction::CONFIRMING;
 			$transaction->amount=BitcoinUtil::toSatoshi("btc",$data["balance_change"]);
 			$transaction->save();
+
+			$account->getPubSub()->publish();
 		}
 
 		if ($transaction->getState()==Transaction::COMPLETE)

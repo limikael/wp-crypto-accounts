@@ -48,12 +48,18 @@ if (!function_exists("bca_entity_account")) {
 
 // Make transaction.
 if (!function_exists("bca_make_transaction")) {
-	function bca_make_transaction($denomination, $fromAccount, $toAccount, $amount, $message="Transaction") {
+	function bca_make_transaction($denomination, $fromAccount, $toAccount, $amount, $options=array()) {
 		$t=new Transaction();
 		$t->setFromAccount($fromAccount);
 		$t->setToAccount($toAccount);
 		$t->setAmount($denomination,$amount);
-		$t->notice=$message;
+
+		if (isset($options["notice"]))
+			$t->setNotice($options["notice"]);
+
+		if (isset($options["confirming"]))
+			$t->setUseConfirming($options["confirming"]);
+
 		$t->perform();
 
 		return $t->id;

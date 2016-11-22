@@ -17,6 +17,7 @@
 
 		private $toAccount;
 		private $fromAccount;
+		private $useConfirming;
 
 		// Initial state. Amount has not left the accounts.
 		const PROCESSING="processing";
@@ -36,6 +37,21 @@
 		public function __construct() {
 			$this->timestamp=time();
 			$this->state=Transaction::PROCESSING;
+			$this->useConfirming=FALSE;
+		}
+
+		/**
+		 * Set notice.
+		 */
+		public function setNotice($notice) {
+			$this->notice=$notice;
+		}
+
+		/**
+		 * Use confirming balance?
+		 */
+		public function setUseConfirming($useConfirming) {
+			$this->useConfirming=$useConfirming;
 		}
 
 		/**
@@ -139,8 +155,15 @@
 			if ($fromAccount->equals($toAccount))
 				throw new Exception("Source and destination is the same account.");
 
-			if ($fromAccount->balance<$this->amount)
-				throw new Exception("Insufficient funds on account.");
+			if ($this->useConfirming) {
+				if ($fromAccount->getConfirmingBalance("satoshi")<$this->amount)
+					throw new Exception("Insufficient funds on account.");
+			}
+
+			else {
+				if ($fromAccount->getBalance("satoshi")<$this->amount)
+					throw new Exception("Insufficient funds on account.");
+			}
 
 			$fromAccount->balance-=$this->amount;
 			$toAccount->balance+=$this->amount;

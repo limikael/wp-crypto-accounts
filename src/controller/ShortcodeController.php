@@ -18,11 +18,11 @@ class ShortcodeController extends Singleton {
 	 * Constructor.
 	 */
 	public function __construct() {
-		add_shortcode("bca_balance", array($this, "bca_balance"));
+		add_shortcode("bca-confirming-balance", array($this, "bca_confirming_balance"));
 		add_shortcode("bca-balance", array($this, "bca_balance"));
-		add_shortcode("bca_deposit", array($this, "bca_deposit"));
-		add_shortcode("bca_history", array($this, "bca_history"));
-		add_shortcode("bca_withdraw", array($this, "bca_withdraw"));
+		add_shortcode("bca-deposit", array($this, "bca_deposit"));
+		add_shortcode("bca-history", array($this, "bca_history"));
+		add_shortcode("bca-withdraw", array($this, "bca_withdraw"));
 
 		add_action('wp_enqueue_scripts',array($this,'enqueue_scripts'));
 	}
@@ -41,6 +41,33 @@ class ShortcodeController extends Singleton {
 	}
 
 	/**
+	 * Print script needed for showing balance.
+	 */
+	private function printBalanceScript() {
+		if (!$this->balanceScriptPrinted) {
+			$account=Account::getCurrentUserAccount();
+			if (!$account)
+				throw new Exception("Not logged in");
+
+			wp_enqueue_script("cryptoaccount",
+				get_site_url().
+				"/wp-content/plugins/wp-crypto-accounts/js/wp-crypto-accounts.js"
+			);
+
+			echo "<script>\n";
+			echo "var ajaxurl='".admin_url('admin-ajax.php')."'\n";
+			echo "var BCA_ACCOUNT_INFO={\n";
+			echo "'balance':".$account->getBalance("satoshi").",";
+			echo "'confirming':".$account->getConfirmingAmount("satoshi").",";
+			echo "'confirmingBalance':".$account->getConfirmingBalance("satoshi");
+			echo "}\n";
+			echo "</script>\n";
+
+			$this->balanceScriptPrinted=TRUE;
+		}
+	}
+
+	/**
 	 * Show user balance.
 	 */
 	public function bca_balance($p) {
@@ -52,21 +79,7 @@ class ShortcodeController extends Singleton {
 		if (!$account)
 			return "<i>not logged in</i>";
 
-		if (!$this->balanceScriptPrinted) {
-			$this->balanceScriptPrinted=TRUE;
-			wp_enqueue_script("cryptoaccount",
-				get_site_url().
-				"/wp-content/plugins/wp-crypto-accounts/js/wp-crypto-accounts.js"
-			);
-
-			echo "<script>\n";
-			echo "var ajaxurl='".admin_url('admin-ajax.php')."'\n";
-			echo "var BCA_ACCOUNT_INFO={\n";
-			echo "'balance':".$account->getBalance("satoshi").",";
-			echo "'confirming':".$account->getConfirmingAmount("satoshi");
-			echo "}\n";
-			echo "</script>\n";
-		}
+		$this->printBalanceScript();
 
 		$s="";
 		$s.="<span class='bca-balance' denomination='".$p["denomination"]."'>";
@@ -78,6 +91,28 @@ class ShortcodeController extends Singleton {
 		if ($a)
 			$s.=" (+".$a." ".$p["denomination"].")";
 
+		$s.="</span>";
+
+		return $s;
+	}
+
+	/**
+	 * Show user confirming balance.
+	 */
+	public function bca_confirming_balance($p) {
+		if (!isset($p["denomination"]))
+			$p["denomination"]="btc";
+
+		$account=Account::getCurrentUserAccount();
+
+		if (!$account)
+			return "<i>not logged in</i>";
+
+		$this->printBalanceScript();
+
+		$s="";
+		$s.="<span class='bca-confirming-balance' denomination='".$p["denomination"]."'>";
+		$s.=$account->getConfirmingBalance($p["denomination"])." ".$p["denomination"]." ";
 		$s.="</span>";
 
 		return $s;
@@ -119,7 +154,7 @@ class ShortcodeController extends Singleton {
 		wp_enqueue_style("wpblockchainaccounts");
 
 		if (!isset($p["denomination"]))
-			$p["denomination"]="bits";
+			$p["denomination"]="btc";
 
 		$denom=$p["denomination"];
 		$account=Account::getCurrentUserAccount();
@@ -159,12 +194,15 @@ class ShortcodeController extends Singleton {
 			return "<i>Accounts are not set up</i>";
 
 		if (!isset($p["denomination"]))
-			$p["denomination"]="bits";
+			$p["denomination"]="btc";
 
 		wp_enqueue_style("wpblockchainaccounts");
 
 		$denom=$p["denomination"];
 		$account=Account::getCurrentUserAccount();
+
+		if ($account->hasConfirming())
+			return "<i>Withdrawal not available, there are unconfirmed transactions on the account.</i><br>";
 
 		if (!$account)
 			return "<i>not logged in</i>";

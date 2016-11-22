@@ -39,7 +39,8 @@ class AccountController extends Singleton {
 	public function printAccountResponse($account) {
 		echo json_encode(array(
 			"balance"=>$account->getBalance("satoshi"),
-			"confirming"=>$account->getConfirmingAmount("satoshi")
+			"confirming"=>$account->getConfirmingAmount("satoshi"),
+			"confirmingBalance"=>$account->getConfirmingBalance("satoshi")
 		),JSON_PRETTY_PRINT);
 	}
 
@@ -60,7 +61,8 @@ class AccountController extends Singleton {
 
 		$account=Account::getCurrentUserAccount();
 		if ($account->getBalance("satoshi")!=$_REQUEST["balance"] ||
-				$account->getConfirmingAmount("satoshi")!=$_REQUEST["confirming"]) {
+				$account->getConfirmingAmount("satoshi")!=$_REQUEST["confirming"] ||
+				$account->getConfirmingBalance("satoshi")!=$_REQUEST["confirmingBalance"]) {
 			$this->printAccountResponse($account);
 			$pubSub->close();
 			exit;
