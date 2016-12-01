@@ -150,15 +150,23 @@ class Account extends WpRecord {
 	/**
 	 * Get transactions for this account.
 	 */
-	public function getTransactions() {
-		return Transaction::findAllByQuery(
-			"SELECT    * ".
+	public function getTransactions($params=array()) {
+		$qparams=array($this->id,$this->id);
+		$and=array();
+
+		if (isset($params["newerThan"]) && $params["newerThan"]) {
+			$and[]="timestamp>%s";
+			$qparams[]=$params["newerThan"];
+		}
+
+		$qs="SELECT    * ".
 			"FROM      :table ".
-			"WHERE     toAccountId=%s OR fromAccountId=%s ".
-			"ORDER BY  timestamp DESC",
-			$this->id,
-			$this->id
-		);
+			"WHERE     (toAccountId=%s OR fromAccountId=%s) ".
+			($and?" AND ":"").
+			join(" AND ",$and)." ".
+			"ORDER BY  timestamp DESC";
+
+		return Transaction::findAllByQuery($qs,$qparams);
 	}
 
 	/**
