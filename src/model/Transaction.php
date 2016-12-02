@@ -48,6 +48,13 @@
 		}
 
 		/**
+		 * Get notice.
+		 */
+		public function getNotice() {
+			return $this->notice;
+		}
+
+		/**
 		 * Use confirming balance?
 		 */
 		public function setUseConfirming($useConfirming) {
