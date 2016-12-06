@@ -199,8 +199,8 @@ class Account extends WpRecord {
 		if ($this->hasConfirming())
 			throw new Exception("There are unconfirmed transactions for the account.");
 
-		if ($this->entity_type!="user")
-			throw new Exception("Can only withdraw from user accounts.");
+		/*if ($this->entity_type!="user")
+			throw new Exception("Can only withdraw from user accounts.");*/
 
 		$this->balance-=BitcoinUtil::toSatoshi($denomination,$amount);
 
