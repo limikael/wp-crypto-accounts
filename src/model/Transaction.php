@@ -220,6 +220,28 @@
 		}
 
 		/**
+		 * Get string representation of the other entity in
+		 * the transaction.
+		 */
+		public function getOtherEntityString($thisAccount) {
+			if ($this->fromAccount && $this->toAccount) {
+				if ($this->fromAccount->equals($thisAccount))
+					return $this->toAccount->getString();
+
+				if ($this->toAccount->equals($thisAccount))
+					return $this->fromAccount->getString();
+
+				throw new Exception("The acount is not a party of the transaction.");
+			}
+
+			if ($this->transactionHash)
+				return $this->transactionHash;
+
+			if ($this->withdrawAddress)
+				return $this->withdrawAddress;
+		}
+
+		/**
 		 * Set up fields.
 		 */
 		public static function initialize() {

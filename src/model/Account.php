@@ -29,6 +29,19 @@ class Account extends WpRecord {
 	}
 
 	/**
+	 * Get administration url for the account.
+	 */
+	public function getAdminUrl() {
+		return admin_url(
+			"options-general.php".
+			"?page=blockchainaccounts_settings".
+			"&tab=accounts".
+			"&type=".$this->entity_type.
+			"&id=".$this->entity_id
+		);
+	}
+
+	/**
 	 * Equals.
 	 */
 	public function equals($account) {
@@ -36,6 +49,13 @@ class Account extends WpRecord {
 			throw new Exception("Can't compare accounts without id.");
 
 		return $this->id==$account->id;
+	}
+
+	/**
+	 * Get string representation.
+	 */
+	public function getString() {
+		return $this->entity_type.":".$this->entity_id;
 	}
 
 	/**
@@ -129,6 +149,22 @@ class Account extends WpRecord {
 			$account=new Account($entity_type, $entity_id);
 			$account->save();
 		}
+
+		return $account;
+	}
+
+	/**
+	 * Get account for entity.
+	 */
+	public static function getExistingEntityAccount($entity_type, $entity_id) {
+		if (!$entity_id)
+			throw new Exception("Expected entity id");
+
+		$account=self::findOneByQuery(
+			"SELECT * FROM %t WHERE entity_type=%s AND entity_id=%s",
+			$entity_type,
+			$entity_id
+		);
 
 		return $account;
 	}

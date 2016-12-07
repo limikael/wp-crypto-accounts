@@ -1,0 +1,9 @@
+{
+	"type": "address",
+	"data": {
+		"address": "2N8a9Afya7PCAVVFPftycQCFBkTpLrEivqE",
+		"txid": "123",
+		"balance_change": "0.05000000",
+		"confirmations": 3
+	}
+}

@@ -121,6 +121,41 @@ class SettingsController extends Singleton {
 			$template->set("transactions",$transactionViews);
 		}
 
+		if ($tab=="accounts") {
+			if (isset($_REQUEST["type"]) && isset($_REQUEST["id"]) &&
+					$_REQUEST["type"] && $_REQUEST["id"])
+				$account=Account::getExistingEntityAccount($_REQUEST["type"],$_REQUEST["id"]);
+
+			else
+				$account=NULL;
+
+			if ($account)
+				$template->set("balance",$account->getBalance("btc")." btc");
+
+			else
+				$template->set("balance","Select account to view");
+
+			$template->set("type",isset($_REQUEST["type"])?$_REQUEST["type"]:"");
+			$template->set("id",isset($_REQUEST["id"])?$_REQUEST["id"]:"");
+
+			$transactionViews=array();
+
+			if ($account) {
+				$transactions=$account->getTransactions();
+				foreach ($transactions as $transaction) {
+					$transactionView=array(
+						"notice"=>$transaction->getNotice(),
+						"entity"=>$transaction->getOtherEntityString($account),
+						"when"=>human_time_diff(time(),$transaction->timestamp)." ago",
+						"amount"=>$transaction->getAmountForAccount("btc",$account)." btc"
+					);
+
+					$transactionViews[]=$transactionView;
+				}
+			}
+			$template->set("transactions",$transactionViews);
+		}
+
 		$template->set("tab",$tab);
 		$template->set("totalAmount",$totalAmount." ".$denomination);
 		$template->show();

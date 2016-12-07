@@ -18,6 +18,10 @@
             href="<?php echo admin_url("options-general.php?page=blockchainaccounts_settings&tab=setup"); ?>">
             Setup
         </a>
+        <a class="nav-tab <?php echo ($tab=="accounts"?"nav-tab-active":"nav-tab"); ?>" 
+            href="<?php echo admin_url("options-general.php?page=blockchainaccounts_settings&tab=accounts"); ?>">
+            Accounts
+        </a>
         <?php
             if (get_option("blockchainaccounts_wallet_type") &&
                     get_option("blockchainaccounts_withdraw_processing")=="manual") {
@@ -39,6 +43,10 @@
 
             case "withdraw":
                 require __DIR__."/settings_withdraw.tpl.php";
+                break;
+
+            case "accounts":
+                require __DIR__."/settings_accounts.tpl.php";
                 break;
         }
     ?>
