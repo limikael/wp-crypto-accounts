@@ -118,6 +118,9 @@ jQuery(function($) {
 		}
 
 		function requestBalanceUpdate() {
+			if (typeof BCA_ACCOUNT_INFO==="undefined")
+				return;
+
 			console.log("Requesting balance update...");
 
 			var data = {
