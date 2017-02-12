@@ -4,6 +4,10 @@ This WordPress plugin allows Wordpres users to deposit and withdraw bitcoin.
 
 It makes a WordPress instance function as a bank, and can be used as a foundation to create banking and financial software in WordPress.
 
+* [User interface](#user-interface)
+* [API](#api)
+* [Security](#security)
+
 ## User interface
 
 The plugin provides a number of shortcodes that can be used to create the user experience on the frontend of the WordPress site. The shortcodes are:
