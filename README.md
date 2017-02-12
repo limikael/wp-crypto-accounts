@@ -17,5 +17,5 @@ The look and feel of the user interface is further tweakable using CSS.
 
 There is an API for other plugins to take advangage of the accounting functionality. The functions exposed through this API are:
 
-* `bca_get_user_account($user)` - Return an Account object for the user specified by $user. The $user parameter can be either a user id or a WordPress User object.
+* `bca_get_user_account($user)`<br>Return an Account object for the user specified by $user. The $user parameter can be either a user id or a WordPress User object.
 * 
