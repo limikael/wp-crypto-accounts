@@ -1,19 +1,21 @@
-wp-crypto-accounts
-==================
+# wp-crypto-accounts
 
-Allow Wordpress users to deposit and withdraw bitcoin.
+This WordPress plugin allows Wordpres users to deposit and withdraw bitcoin.
 
-More documentation to come.
+## User interface
 
-Running tests
--------------
+The plugin provides a number of shortcodes that can be used to create the user experience on the frontend of the WordPress site. The shortcodes are:
 
-1. Create a database user.
-2. run ./bin/install-wp-tests.sh <db-name> <db-user> <db-pass> [host]
-3. Run phpunit
+* `[bca-balance]` - Show the current balance for the currently logged in user.
+* `[bca-deposit]` - Show an interface, including a QR-code, for the user to deposit funds into the account.
+* `[bca-history]` - Show the account history for the current user.
+* `[bca-withdraw]` - Show an interface that lets the current user withdraw funds to an external Bitcoin address.
 
-Caveats when running tests
---------------------------
+The look and feel of the user interface is further tweakable using CSS.
 
-Host defaults to localhost, which should in theory be fine. This might not always work, 
-however, depending on your php setup. You can try 127.0.0.1 as well.
+## API
+
+There is an API for other plugins to take advangage of the accounting functionality. The functions exposed through this API are:
+
+* `bca_get_user_account($user)` - Return an Account object for the user specified by $user. The $user parameter can be either a user id or a WordPress User object.
+* 
