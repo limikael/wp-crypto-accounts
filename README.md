@@ -1,5 +1,7 @@
 # wp-crypto-accounts
 
+Sorry... This plugin is not maintained anymore... :(
+
 This WordPress plugin allows Wordpres users to deposit and withdraw bitcoin.
 
 It makes a WordPress instance function as a bank, and can be used as a foundation to create banking and financial software in WordPress.
